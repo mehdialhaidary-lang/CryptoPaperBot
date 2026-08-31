@@ -146,3 +146,8 @@ KeyError: 'slow_ema'
 2026-08-31 13:31:38,825 [INFO] 💰 الرصيد الحالي: $1000.00
 2026-08-31 13:31:38,825 [INFO] ============================================================
 2026-08-31 13:31:39,197 [INFO] 💓 تم إرسال نبضة حياة (uptime: 0.0h)
+2026-08-31 12:04:20,378 [WARNING] ⚠️ انقطاع مؤقت في الشبكة/المنصة: binance GET https://api.binance.com/api/v3/exchangeInfo 451  {
+  "code": 0,
+  "msg": "Service unavailable from a restricted location according to 'b. Eligibility' in https://www.binance.com/en/terms. Please contact customer service if you believe you received this message in error."
+}
+2026-08-31 12:04:24,110 [INFO] 💓 تم إرسال نبضة حياة (GitHub Actions)
