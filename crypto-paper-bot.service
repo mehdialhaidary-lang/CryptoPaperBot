@@ -1,0 +1,15 @@
+[Unit]
+Description=Crypto Paper Trading Bot (EMA Cross)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/home/ubuntu/CryptoPaperBot
+ExecStart=/home/ubuntu/CryptoPaperBot/venv/bin/python /home/ubuntu/CryptoPaperBot/paper_trading.py
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,4 @@
+__pycache__/
+*.pyc
+paper_bot.lock
+run_bot_hidden.vbs
