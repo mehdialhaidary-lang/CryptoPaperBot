@@ -58,8 +58,18 @@ def main():
         evaluate_signals_on_candle_close(exchange, state)
     except (ccxt.RequestTimeout, ccxt.NetworkError) as ne:
         logging.warning(f"⚠️ انقطاع مؤقت في الشبكة/المنصة: {ne}")
+        send_telegram(
+            f"⚠️ *تنبيه: فشل فحص السوق (انقطاع شبكة مؤقت)*\n\n"
+            f"`{ne}`\n\n"
+            f"سيُعاد المحاولة تلقائيًا في الدورة القادمة (~15 دقيقة)."
+        )
     except Exception as e:
         logging.error(f"❌ خطأ غير متوقع أثناء الدورة: {e}", exc_info=True)
+        send_telegram(
+            f"🚨 *تنبيه: خطأ غير متوقع في البوت*\n\n"
+            f"`{type(e).__name__}: {e}`\n\n"
+            f"راجع سجل GitHub Actions للتفاصيل الكاملة."
+        )
 
     send_heartbeat_if_due(state)
 

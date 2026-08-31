@@ -410,6 +410,9 @@ def main():
         heartbeat_interval_sec = CONFIG['heartbeat_interval_hours'] * 3600
         send_heartbeat(state, start_time)
 
+        last_error_alert = 0
+        error_alert_cooldown_sec = 1800  # لا يزيد تنبيه الأخطاء عن مرة كل 30 دقيقة لتفادي الإزعاج
+
         while True:
             try:
                 monitor_live_position(exchange, state)
@@ -422,6 +425,13 @@ def main():
                 logging.warning(f"⚠️ انقطاع مؤقت في الشبكة/المنصة: {ne} (سيتم إعادة المحاولة بعد 10 ثوانٍ)")
             except Exception as e:
                 logging.error(f"❌ خطأ غير متوقع أثناء الدورة: {e}", exc_info=True)
+                if time.time() - last_error_alert >= error_alert_cooldown_sec:
+                    send_telegram(
+                        f"🚨 *تنبيه: خطأ غير متوقع في البوت*\n\n"
+                        f"`{type(e).__name__}: {e}`\n\n"
+                        f"راجع trading_bot.log للتفاصيل الكاملة."
+                    )
+                    last_error_alert = time.time()
 
             time.sleep(10)
     finally:
