@@ -14,6 +14,7 @@ from paper_trading import (
     monitor_live_position,
     evaluate_signals_on_candle_close,
     send_telegram,
+    create_exchange,
 )
 
 
@@ -43,15 +44,7 @@ def send_heartbeat_if_due(state):
 
 def main():
     state = load_state()
-
-    exchange = ccxt.binance({
-        'enableRateLimit': True,
-        'timeout': 20000,
-        'options': {
-            'defaultType': 'spot',
-            'fetchMarkets': ['spot']
-        }
-    })
+    exchange = create_exchange()
 
     try:
         monitor_live_position(exchange, state)

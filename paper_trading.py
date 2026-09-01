@@ -385,21 +385,28 @@ def evaluate_signals_on_candle_close(exchange, state):
             send_telegram(msg)
             logging.info(f"🚀 فتح صفقة جديدة عند السعر ${entry_price:,.2f}")
 
+def create_exchange():
+    exchange = ccxt.binance({
+        'enableRateLimit': True,
+        'timeout': 20000,  # 20 ثانية مهلة اتصال
+        'options': {
+            'defaultType': 'spot',
+            'fetchMarkets': ['spot']  # إلغاء طلب أسواق dapi/fapi لتجنب الـ Timeout
+        }
+    })
+    # data-api.binance.vision مرآة رسمية لبيانات السوق العامة بدون قيود جغرافية
+    # (خلافًا لـ api.binance.com التي تحظر بعض عناوين IP، مثل خوادم GitHub Actions، بخطأ 451)
+    exchange.urls['api']['public'] = 'https://data-api.binance.vision/api/v3'
+    exchange.urls['api']['v1'] = 'https://data-api.binance.vision/api/v1'
+    return exchange
+
 def main():
     prevent_multiple_instances()
     try:
         state = load_state()
 
-        # 🛠️ التهيئة الصحيحة لـ CCXT لمنع الاتصال بـ dapi وزيادة timeout
-        exchange = ccxt.binance({
-            'enableRateLimit': True,
-            'timeout': 20000,  # 20 ثانية مهلة اتصال
-            'options': {
-                'defaultType': 'spot',
-                'fetchMarkets': ['spot']  # إلغاء طلب أسواق dapi/fapi لتجنب الـ Timeout
-            }
-        })
-        
+        exchange = create_exchange()
+
         logging.info("=" * 60)
         logging.info("🤖 تشغيل محاكي التداول الكمّي (Paper Trading Engine)...")
         logging.info(f"💰 الرصيد الحالي: ${state['balance']:.2f}")
