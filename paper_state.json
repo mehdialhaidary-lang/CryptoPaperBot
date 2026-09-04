@@ -1,14 +1,18 @@
 {
-    "balance": 1000.0,
+    "balance": 977.9135032420938,
     "initial_balance": 1000.0,
-    "position": {
-        "entry_time": "2026-09-03 17:58:23.665323+00:00",
-        "entry_price": 81092.59510899999,
-        "sl": 79028.03465773864,
-        "tp": 86253.99623715335,
-        "units": 0.00968729202759889
-    },
-    "last_processed_candle_time": 1788494400000,
-    "trades": [],
+    "position": null,
+    "last_processed_candle_time": 1788508800000,
+    "trades": [
+        {
+            "entry_time": "2026-09-03 17:58:23.665323+00:00",
+            "exit_time": "2026-09-04 14:52:32.892771+00:00",
+            "entry_price": 81092.59510899999,
+            "exit_price": 78972.71503347822,
+            "pnl": -22.086496757906122,
+            "reason": "STOP LOSS \ud83d\udd34 (Live Hit)",
+            "balance_after": 977.9135032420938
+        }
+    ],
     "last_heartbeat_time": 1788519300.2264163
 }
