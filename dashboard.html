@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
@@ -206,10 +206,11 @@ function getDur(a, b) {
   } catch { return '—'; }
 }
 
-function signal(c) {
-  const crossUp = c.emaFast > c.emaSlow;
+function signal(c, prevC) {
+  const isBullish = c.emaFast > c.emaSlow;
+  const isFreshCross = prevC ? (prevC.emaFast <= prevC.emaSlow && c.emaFast > c.emaSlow) : false;
   const rsiOk = c.rsi >= 40;
-  return { crossUp, rsiOk, allOk: crossUp && rsiOk && c.dailyUp };
+  return { isBullish, isFreshCross, rsiOk, allOk: isFreshCross && rsiOk && c.dailyUp };
 }
 
 function render() {
@@ -226,6 +227,7 @@ function render() {
   const winRate = trades.length ? ((wins/trades.length)*100).toFixed(0) : 0;
   const pos = state.position;
   const lastC = candles.at(-1);
+  const prevC = candles.length > 1 ? candles.at(-2) : null;
 
   document.getElementById('app').innerHTML = `
     <div style="margin-bottom: 20px; color: var(--blue); font-size: 20px; font-weight: bold;">
@@ -254,7 +256,7 @@ function render() {
       </div>
     </div>
 
-    ${lastC ? renderSignal(lastC, state) : ''}
+    ${lastC ? renderSignal(lastC, prevC, state) : ''}
     ${trades.length ? renderTrades(trades) : ''}
     ${renderLog(candles)}
   `;
@@ -264,14 +266,18 @@ function render() {
 
 function renderFeed(candles) {
   if (candles.length === 0) return '<p style="color:var(--muted);text-align:center;padding:20px;">لا توجد بيانات سجلات متاحة حالياً.</p>';
-  return [...candles].reverse().slice(0,35).map(c => {
-    const {crossUp, rsiOk, allOk} = signal(c);
+  return [...candles].reverse().slice(0,35).map((c, idx, arr) => {
+    const prevC = arr[idx + 1];
+    const sig = signal(c, prevC);
     let cls = 'r-wait', txt = '⏳ انتظار — ';
     const fails = [];
-    if (!crossUp) fails.push('لا تقاطع EMA صاعد');
+    if (!sig.isFreshCross) {
+      if (sig.isBullish) fails.push('الترند صاعد لكن التقاطع حدث مسبقاً (لا دخول متأخر)');
+      else fails.push('لا تقاطع صاعد');
+    }
     if (!c.dailyUp) fails.push('اتجاه يومي هابط');
-    if (!rsiOk) fails.push(`RSI=${c.rsi.toFixed(1)} أقل من 40`);
-    if (allOk) { cls='r-enter'; txt='🚀 إشارة دخول! كل الشروط مكتملة'; }
+    if (!sig.rsiOk) fails.push(`RSI=${c.rsi.toFixed(1)} أقل من 40`);
+    if (sig.allOk) { cls='r-enter'; txt='🚀 إشارة دخول مؤكدة! تقاطع صاعد جديد'; }
     else txt += fails.join(' · ');
     return `<div class="dec-item">
       <div class="dec-time">🕐 ${c.logTime.substring(0,16)} | شمعة ${c.candleTime.substring(5,16)}</div>
@@ -287,28 +293,49 @@ function renderFeed(candles) {
   }).join('');
 }
 
-function renderSignal(c, state) {
-  const {crossUp, rsiOk, allOk} = signal(c);
+function renderSignal(c, prevC, state) {
+  const sig = signal(c, prevC);
   const reasons = [
-    { pass: crossUp, text: crossUp ? `EMA سريع (${c.emaFast.toFixed(0)}) > EMA بطيء (${c.emaSlow.toFixed(0)}) ✓ تقاطع صاعد` : `EMA سريع (${c.emaFast.toFixed(0)}) < EMA بطيء (${c.emaSlow.toFixed(0)}) ✗ لا تقاطع` },
+    { 
+      pass: sig.isFreshCross, 
+      text: sig.isFreshCross 
+        ? `تقاطع صاعد طازج في هذه الشمعة (EMA 8 اخترق EMA 30) ✓` 
+        : sig.isBullish 
+          ? `الترند صاعد (EMA 8 > EMA 30) لكن التقاطع حدث في شمعة سابقة ✗ — البوت لا يطارد السعر (تجنب القمم)` 
+          : `لا يوجد تقاطع صاعد (EMA 8 < EMA 30) ✗` 
+    },
     { pass: c.dailyUp, text: c.dailyUp ? 'الاتجاه اليومي صاعد (السعر فوق EMA 21 يومي) ✓' : 'الاتجاه اليومي هابط ✗ — شرط أساسي مفقود' },
-    { pass: rsiOk, text: rsiOk ? `RSI = ${c.rsi.toFixed(1)} في النطاق المقبول (≥40) ✓` : `RSI = ${c.rsi.toFixed(1)} — تشبع بيعي، يجب أن يكون ≥40 ✗` }
+    { pass: sig.rsiOk, text: sig.rsiOk ? `RSI = ${c.rsi.toFixed(1)} في النطاق المقبول (≥40) ✓` : `RSI = ${c.rsi.toFixed(1)} — تشبع بيعي، يجب أن يكون ≥40 ✗` }
   ];
   const expectedRisk = (state.balance * 0.02).toFixed(2);
   const slDist = (c.atr * 2).toFixed(0);
   const tpDist = (c.atr * 2 * 2.5).toFixed(0);
 
+  let badgeClass = 'tb-red';
+  let badgeText = '⏳ انتظار — الشروط غير مكتملة';
+  if (sig.allOk) {
+    badgeClass = 'tb-green';
+    badgeText = '🚀 إشارة دخول مؤكدة! كل الشروط مكتملة';
+  } else if (sig.isBullish && c.dailyUp && sig.rsiOk) {
+    badgeClass = 'tb-yellow';
+    badgeText = '⏳ ترند صاعد مستمر — في انتظار دورة تقاطع جديدة';
+  }
+
   return `
   <div class="signal-panel">
     <div class="card-hdr">
       <div><div class="card-title">🔭 تحليل الإشارة الحالية — آخر شمعة 4H</div><div class="card-sub">${c.logTime.substring(0,16)}</div></div>
-      <span class="tbadge ${allOk?'tb-green':'tb-red'}">${allOk?'✅ شروط الدخول مكتملة!':'⏳ انتظار — الشروط غير مكتملة'}</span>
+      <span class="tbadge ${badgeClass}">${badgeText}</span>
     </div>
     <div class="sig-grid">
       <div class="sig-item">
         <div class="sig-name">📉 تقاطع EMA (8/30)</div>
-        <div class="sig-val" style="color:${crossUp?'var(--green)':'var(--red)'}">${crossUp?'صاعد ✓':'هابط ✗'}</div>
-        <div class="sig-hint" style="color:${crossUp?'var(--green)':'var(--red)'}">${c.emaFast.toFixed(0)} ${crossUp?'>':'<'} ${c.emaSlow.toFixed(0)}</div>
+        <div class="sig-val" style="color:${sig.isFreshCross?'var(--green)':sig.isBullish?'var(--yellow)':'var(--red)'}">
+          ${sig.isFreshCross?'تقاطع جديد 🚀':sig.isBullish?'صاعد مستمر ⏳':'هابط ✗'}
+        </div>
+        <div class="sig-hint" style="color:${sig.isFreshCross?'var(--green)':sig.isBullish?'var(--yellow)':'var(--red)'}">
+          ${sig.isFreshCross?'تقاطع طازج تم في هذه الشمعة ✓':sig.isBullish?'التقاطع حدث سابقاً (لا دخول متأخر)':'EMA سريع أسفل EMA بطيء'}
+        </div>
       </div>
       <div class="sig-item">
         <div class="sig-name">📈 الاتجاه اليومي</div>
@@ -317,13 +344,14 @@ function renderSignal(c, state) {
       </div>
       <div class="sig-item">
         <div class="sig-name">⚡ RSI (14)</div>
-        <div class="sig-val" style="color:${rsiOk?(c.rsi>=70?'var(--yellow)':'var(--green)'):'var(--red)'}">${c.rsi.toFixed(1)} ${rsiOk?'✓':'✗'}</div>
-        <div class="sig-hint" style="color:${rsiOk?'var(--green)':'var(--red)'}">${c.rsi>=70?'⚠️ تشبع شرائي':c.rsi<40?'🔴 تشبع بيعي':'✓ النطاق المقبول'}</div>
+        <div class="sig-val" style="color:${sig.rsiOk?(c.rsi>=70?'var(--yellow)':'var(--green)'):'var(--red)'}">${c.rsi.toFixed(1)} ${sig.rsiOk?'✓':'✗'}</div>
+        <div class="sig-hint" style="color:${sig.rsiOk?'var(--green)':'var(--red)'}">${c.rsi>=70?'⚠️ تشبع شرائي':c.rsi<40?'🔴 تشبع بيعي':'✓ النطاق المقبول'}</div>
       </div>
     </div>
     <div class="why-box">
-      <div class="why-title">${allOk?'🚀 لماذا سيدخل البوت؟':'🚫 لماذا لا يدخل البوت؟'}</div>
+      <div class="why-title">${sig.allOk?'🚀 لماذا سيدخل البوت؟':'🚫 لماذا لا يدخل البوت؟'}</div>
       ${reasons.map(r=>`<div class="why-row"><div class="why-icon">${r.pass?'✅':'❌'}</div><div>${r.text}</div></div>`).join('')}
+      ${(!sig.isFreshCross && sig.isBullish && c.dailyUp && sig.rsiOk) ? '<div style="margin-top:8px;padding:8px;border-radius:6px;background:rgba(250,204,21,0.08);border:1px solid rgba(250,204,21,0.2);font-size:11px;color:var(--yellow)">💡 <strong>توضيح ذكاء البوت:</strong> المؤشرات إيجابية ولكن التقاطع حدث قبل هذه الشمعة؛ البوت يرفض مطاردة السعر تجنباً للدخول عند القمم، وسيدخل في أول تقاطع صاعد جديد قادم.</div>' : ''}
       <div style="height:1px;background:var(--border);margin:10px 0"></div>
       <div class="why-row"><div class="why-icon">📏</div><div>ATR = <strong>${c.atr.toFixed(0)}</strong> → وقف الخسارة بُعده <strong>$${slDist}</strong> · الهدف بُعده <strong>$${tpDist}</strong> (RR 2.5×)</div></div>
       <div class="why-row"><div class="why-icon">💰</div><div>مخاطرة 2% = <strong>$${expectedRisk}</strong></div></div>
@@ -363,9 +391,10 @@ function renderLog(candles) {
   return `<div class="full-card">
     <div class="card-hdr"><div class="card-title">📜 السجل التفصيلي — آخر 25 شمعة 4H</div></div>
     <table>
-      <thead><tr><th>وقت الفحص</th><th>السعر</th><th>EMA 8</th><th>EMA 30</th><th>RSI</th><th>ATR</th><th>يومي↑</th><th>EMA↑</th><th>القرار</th></tr></thead>
-      <tbody>${last.map(c => {
-        const {crossUp, allOk} = signal(c);
+      <thead><tr><th>وقت الفحص</th><th>السعر</th><th>EMA 8</th><th>EMA 30</th><th>RSI</th><th>ATR</th><th>يومي↑</th><th>EMA</th><th>القرار</th></tr></thead>
+      <tbody>${last.map((c, idx, arr) => {
+        const prevC = arr[idx + 1];
+        const sig = signal(c, prevC);
         return `<tr>
           <td style="font-size:11px">${c.logTime.substring(5,16)}</td>
           <td style="font-weight:600">$${c.close.toLocaleString()}</td>
@@ -374,8 +403,14 @@ function renderLog(candles) {
           <td style="color:${c.rsi<40?'var(--red)':c.rsi>70?'var(--yellow)':'var(--green)'}">${c.rsi.toFixed(1)}${c.rsi<40?' ⚠️':''}</td>
           <td>${c.atr.toFixed(0)}</td>
           <td>${c.dailyUp?'✅':'❌'}</td>
-          <td style="color:${crossUp?'var(--green)':'var(--red)'};font-size:14px">${crossUp?'↑':'↓'}</td>
-          <td><span class="tbadge ${allOk?'tb-green':'tb-red'}">${allOk?'🚀 إشارة':'⏳ انتظار'}</span></td>
+          <td style="color:${sig.isFreshCross?'var(--green)':sig.isBullish?'var(--yellow)':'var(--red)'};font-size:12px;font-weight:600">
+            ${sig.isFreshCross ? '🚀 تقاطع' : sig.isBullish ? '↑ صاعد' : '↓ هابط'}
+          </td>
+          <td>
+            <span class="tbadge ${sig.allOk ? 'tb-green' : sig.isBullish ? 'tb-yellow' : 'tb-red'}">
+              ${sig.allOk ? '🚀 دخول' : sig.isBullish ? '⏳ متابعة' : '⏳ انتظار'}
+            </span>
+          </td>
         </tr>`;
       }).join('')}</tbody>
     </table>
@@ -426,7 +461,8 @@ function drawChart(candles, state) {
   ctx.stroke();
 
   disp.forEach((c,i) => {
-    if (signal(c).allOk) {
+    const prevC = i > 0 ? disp[i - 1] : null;
+    if (signal(c, prevC).allOk) {
       ctx.beginPath(); ctx.arc(px(i), py(c.close)-8, 4, 0, Math.PI*2);
       ctx.fillStyle='#22c55e'; ctx.fill();
     }
