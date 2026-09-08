@@ -1,4 +1,4 @@
-﻿{
+{
     "balance": 977.9135032420938,
     "initial_balance": 1000.0,
     "position": null,
@@ -10,9 +10,9 @@
             "entry_price": 81092.59510899999,
             "exit_price": 78972.71503347822,
             "pnl": -22.086496757906122,
-            "reason": "STOP LOSS \ud83d\udd34 (Live Hit)",
+            "reason": "STOP LOSS 🔴 (Live Hit)",
             "balance_after": 977.9135032420938
         }
     ],
-    "last_heartbeat_time": 1788848789.2779117
+    "last_heartbeat_time": 0
 }
