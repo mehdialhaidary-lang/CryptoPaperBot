@@ -1,0 +1,461 @@
+﻿<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🤖 CryptoPaperBot — لوحة التحكم</title>
+  <style>
+    :root { --bg:#0f1117; --card:#1a1d27; --card2:#21253a; --border:#2a2f45; --text:#e2e8f0; --muted:#64748b; --green:#22c55e; --red:#ef4444; --blue:#60a5fa; --orange:#f97316; --purple:#a78bfa; --yellow:#facc15; }
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{background:var(--bg);color:var(--text);font-family:'Segoe UI',Tahoma,sans-serif;min-height:100vh;}
+    .header{background:linear-gradient(135deg,#1a1d27,#12151f);border-bottom:1px solid var(--border);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+    .header h1{font-size:18px;font-weight:700;background:linear-gradient(135deg,#60a5fa,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+    .header-sub{font-size:11px;color:var(--muted);margin-top:2px;}
+    .badge{padding:5px 12px;border-radius:20px;font-size:12px;font-weight:600;display:inline-flex;align-items:center;gap:6px;}
+    .badge-live{background:rgba(34,197,94,.15);border:1px solid rgba(34,197,94,.3);color:var(--green);}
+    .badge-loading{background:rgba(250,204,21,.15);border:1px solid rgba(250,204,21,.3);color:var(--yellow);}
+    .badge-err{background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);color:var(--red);}
+    .pulse{width:7px;height:7px;border-radius:50%;background:currentColor;animation:pulse 2s infinite;}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+    
+    /* Tabs */
+    .tabs{display:flex;gap:10px;margin:20px 24px 0 24px;border-bottom:1px solid var(--border);padding-bottom:0;}
+    .tab{padding:10px 20px;cursor:pointer;font-weight:600;color:var(--muted);border-bottom:3px solid transparent;transition:all 0.2s;font-size:14px;}
+    .tab:hover{color:var(--text);}
+    .tab.active{color:var(--blue);border-bottom-color:var(--blue);}
+    
+    .container{max-width:1400px;margin:0 auto;padding:20px 24px;}
+    .stats-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:20px;}
+    .stat-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;text-align:center;}
+    .stat-label{font-size:11px;color:var(--muted);margin-bottom:6px;}
+    .stat-val{font-size:22px;font-weight:700;}
+    .stat-sub{font-size:11px;color:var(--muted);margin-top:3px;}
+    .two-col{display:grid;grid-template-columns:1fr 400px;gap:16px;margin-bottom:16px;}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;}
+    .card-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+    .card-title{font-size:14px;font-weight:600;}
+    .card-sub{font-size:11px;color:var(--muted);}
+    .decisions{max-height:500px;overflow-y:auto;}
+    .dec-item{border-bottom:1px solid var(--border);padding:11px 0;}
+    .dec-item:last-child{border-bottom:none;}
+    .dec-time{font-size:11px;color:var(--muted);margin-bottom:5px;}
+    .pills{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:5px;}
+    .pill{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600;}
+    .p-blue{background:rgba(96,165,250,.15);color:var(--blue);}
+    .p-org{background:rgba(249,115,22,.15);color:var(--orange);}
+    .p-pur{background:rgba(167,139,250,.15);color:var(--purple);}
+    .p-gray{background:rgba(100,116,139,.15);color:var(--muted);}
+    .dec-reason{font-size:12px;padding:5px 10px;border-radius:8px;}
+    .r-wait{background:rgba(100,116,139,.1);border:1px solid rgba(100,116,139,.2);color:var(--muted);}
+    .r-enter{background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3);color:var(--green);}
+    .r-sl{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:var(--red);}
+    .signal-panel{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px;}
+    .sig-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px;}
+    .sig-item{background:var(--card2);border-radius:10px;padding:12px;}
+    .sig-name{font-size:11px;color:var(--muted);margin-bottom:4px;}
+    .sig-val{font-size:15px;font-weight:700;}
+    .sig-hint{font-size:11px;margin-top:3px;}
+    .why-box{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:14px;margin-top:12px;}
+    .why-title{font-size:12px;font-weight:600;margin-bottom:8px;}
+    .why-row{display:flex;align-items:flex-start;gap:8px;margin-bottom:5px;font-size:12px;color:var(--muted);}
+    .why-icon{width:18px;flex-shrink:0;text-align:center;}
+    .full-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px;}
+    table{width:100%;border-collapse:collapse;font-size:12px;}
+    th{padding:8px 10px;text-align:right;color:var(--muted);border-bottom:1px solid var(--border);font-weight:500;}
+    td{padding:10px 10px;border-bottom:1px solid rgba(42,47,69,.5);}
+    tr:last-child td{border-bottom:none;}
+    tr:hover td{background:rgba(255,255,255,.02);}
+    .tbadge{padding:3px 8px;border-radius:10px;font-size:11px;font-weight:600;}
+    .tb-red{background:rgba(239,68,68,.15);color:var(--red);}
+    .tb-green{background:rgba(34,197,94,.15);color:var(--green);}
+    .tb-yellow{background:rgba(250,204,21,.15);color:var(--yellow);}
+    .trade-analysis{margin-top:12px;padding:14px;background:var(--card2);border-radius:10px;border:1px solid var(--border);}
+    .ta-title{font-size:13px;font-weight:600;margin-bottom:10px;}
+    .load-screen{text-align:center;padding:80px 20px;}
+    .spinner{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--blue);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 16px;}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .btn{padding:6px 14px;border-radius:8px;border:1px solid var(--border);background:var(--card2);color:var(--text);font-size:12px;cursor:pointer;transition:all .2s;}
+    .btn:hover{border-color:var(--blue);color:var(--blue);}
+    ::-webkit-scrollbar{width:5px;}
+    ::-webkit-scrollbar-track{background:var(--bg);}
+    ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+    @media(max-width:1100px){.two-col{grid-template-columns:1fr}.stats-grid{grid-template-columns:repeat(3,1fr)}}
+    @media(max-width:700px){.stats-grid{grid-template-columns:repeat(2,1fr)}}
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div style="display:flex;align-items:center;gap:12px">
+    <div style="font-size:26px">🤖</div>
+    <div>
+      <h1>CryptoPaperBot Dashboard</h1>
+      <div class="header-sub">EMA 8/30 · RSI 14 · ATR 14 · فريم 4H — بيانات مباشرة من GitHub</div>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;gap:10px">
+    <div id="lastUpdate" style="font-size:11px;color:var(--muted)"></div>
+    <button class="btn" onclick="loadAll()">🔄 تحديث</button>
+    <div id="statusBadge" class="badge badge-loading"><div class="pulse"></div>جاري التحميل...</div>
+  </div>
+</div>
+
+<div class="tabs" id="tabsContainer">
+  <div class="tab active" onclick="switchTab('BTC/USDT')">₿ BTC/USDT</div>
+  <div class="tab" onclick="switchTab('ETH/USDT')">⟠ ETH/USDT</div>
+</div>
+
+<div class="container">
+  <div id="app">
+    <div class="load-screen">
+      <div class="spinner"></div>
+      <p style="color:var(--muted)">جاري جلب البيانات من GitHub...</p>
+    </div>
+  </div>
+</div>
+
+<script>
+const REPO = 'mehdialhaidary-lang/CryptoPaperBot';
+const RAW = `https://raw.githubusercontent.com/${REPO}/main`;
+
+let appData = {
+  'BTC/USDT': { state: null, candles: [] },
+  'ETH/USDT': { state: null, candles: [] }
+};
+let activeSymbol = 'BTC/USDT';
+
+async function loadAll() {
+  setBadge('loading');
+  try {
+    const [btcRes, ethRes, logRes] = await Promise.all([
+      fetch(`${RAW}/paper_state_BTC_USDT.json?t=${Date.now()}`),
+      fetch(`${RAW}/paper_state_ETH_USDT.json?t=${Date.now()}`),
+      fetch(`${RAW}/trading_bot.log?t=${Date.now()}`)
+    ]);
+    
+    if (!btcRes.ok || !ethRes.ok) throw new Error('فشل تحميل ملفات الحالة');
+    
+    appData['BTC/USDT'].state = await btcRes.json();
+    appData['ETH/USDT'].state = await ethRes.json();
+    
+    parseLog(await logRes.text());
+    
+    render();
+    setBadge('live');
+    document.getElementById('lastUpdate').textContent = 'آخر تحديث: ' + new Date().toLocaleTimeString('ar');
+  } catch(e) {
+    document.getElementById('app').innerHTML = `<div style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:var(--red);border-radius:10px;padding:20px;text-align:center;margin-top:40px">❌ ${e.message}<br><small style="color:var(--muted)">تأكد من اتصالك بالإنترنت</small></div>`;
+    setBadge('err');
+  }
+}
+
+function switchTab(symbol) {
+  activeSymbol = symbol;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  render();
+}
+
+function setBadge(s) {
+  const b = document.getElementById('statusBadge');
+  b.className = 'badge badge-' + (s === 'live' ? 'live' : s === 'loading' ? 'loading' : 'err');
+  b.innerHTML = '<div class="pulse"></div>' + (s === 'live' ? 'بيانات مباشرة' : s === 'loading' ? 'جاري التحميل...' : 'خطأ');
+}
+
+function parseLog(text) {
+  appData['BTC/USDT'].candles = [];
+  appData['ETH/USDT'].candles = [];
+  
+  text.split('\n').forEach(line => {
+    // New format with symbol: [INFO] 📊 [BTC/USDT] شمعة مغلقة ...
+    let m = line.match(/(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}),\d+ \[INFO\].*\[(BTC\/USDT|ETH\/USDT)\].*\[(\d{4}-\d{2}-\d{2} \S+)\] \| Close: \$([\d,]+\.?\d*) \| (?:Fast EMA|EMA Fast): ([\d.]+) \| (?:Slow EMA|EMA Slow): ([\d.]+) \| RSI: ([\d.]+) \| ATR: ([\d.]+) \| Daily Trend Up: (True|False)/i);
+    
+    // Fallback for old logs without symbol (assume BTC)
+    if (!m) {
+      const oldM = line.match(/(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}),\d+ \[INFO\].*شمعة مغلقة.*\[(\d{4}-\d{2}-\d{2} \S+)\] \| Close: \$([\d,]+\.?\d*) \| Fast EMA: ([\d.]+) \| Slow EMA: ([\d.]+) \| RSI: ([\d.]+) \| ATR: ([\d.]+) \| Daily Trend Up: (True|False)/i);
+      if (oldM) m = [oldM[0], oldM[1], 'BTC/USDT', oldM[2], oldM[3], oldM[4], oldM[5], oldM[6], oldM[7], oldM[8]];
+    }
+
+    if (m) {
+      const symbol = m[2];
+      appData[symbol].candles.push({
+        logTime: m[1], candleTime: m[3],
+        close: parseFloat(m[4].replace(/,/g,'')),
+        emaFast: parseFloat(m[5]), emaSlow: parseFloat(m[6]),
+        rsi: parseFloat(m[7]), atr: parseFloat(m[8]),
+        dailyUp: m[9] === 'True'
+      });
+    }
+  });
+}
+
+function pnlColor(v) { return v >= 0 ? 'var(--green)' : 'var(--red)'; }
+function sign(v) { return v >= 0 ? '+' : ''; }
+function fmtPrice(v) { return '$' + parseFloat(v).toLocaleString('en', {minimumFractionDigits:2, maximumFractionDigits:2}); }
+function fmtDate(s) {
+  if (!s) return '—';
+  try {
+    const d = new Date(s.replace(' ','+00:00').replace('+00:00','+00:00'));
+    return d.toLocaleDateString('ar-SA',{month:'short',day:'numeric'}) + ' ' + d.toLocaleTimeString('ar',{hour:'2-digit',minute:'2-digit'});
+  } catch { return s.substring(0,16); }
+}
+function getDur(a, b) {
+  try {
+    const ms = new Date(b.replace(' ','+').replace('+00:00','Z')) - new Date(a.replace(' ','+').replace('+00:00','Z'));
+    const h = Math.floor(ms/3600000); return h + ' ساعة';
+  } catch { return '—'; }
+}
+
+function signal(c) {
+  const crossUp = c.emaFast > c.emaSlow;
+  const rsiOk = c.rsi >= 40;
+  return { crossUp, rsiOk, allOk: crossUp && rsiOk && c.dailyUp };
+}
+
+function render() {
+  const data = appData[activeSymbol];
+  const state = data.state;
+  const candles = data.candles;
+  
+  if (!state) return;
+
+  const bal = state.balance, init = state.initial_balance;
+  const pnl = bal - init, pnlPct = ((pnl/init)*100).toFixed(2);
+  const trades = state.trades || [];
+  const wins = trades.filter(t => t.pnl > 0).length;
+  const winRate = trades.length ? ((wins/trades.length)*100).toFixed(0) : 0;
+  const pos = state.position;
+  const lastC = candles.at(-1);
+
+  document.getElementById('app').innerHTML = `
+    <div style="margin-bottom: 20px; color: var(--blue); font-size: 20px; font-weight: bold;">
+      محفظة ${activeSymbol}
+    </div>
+    
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-label">💰 الرصيد الحالي</div><div class="stat-val" style="color:var(--blue)">${fmtPrice(bal)}</div><div class="stat-sub">ابتدائي: ${fmtPrice(init)}</div></div>
+      <div class="stat-card"><div class="stat-label">📈 الربح / الخسارة</div><div class="stat-val" style="color:${pnlColor(pnl)}">${sign(pnl)}${fmtPrice(pnl)}</div><div class="stat-sub" style="color:${pnlColor(pnl)}">${sign(pnl)}${pnlPct}%</div></div>
+      <div class="stat-card"><div class="stat-label">🎯 الصفقات</div><div class="stat-val">${trades.length}</div><div class="stat-sub">Win Rate: ${winRate}% | ربح: ${wins} | خسارة: ${trades.length-wins}</div></div>
+      <div class="stat-card"><div class="stat-label">📍 الصفقة الحالية</div><div class="stat-val" style="color:${pos?'var(--green)':'var(--muted)'}">${pos?'مفتوحة 🟢':'انتظار ⏳'}</div><div class="stat-sub">${pos?fmtPrice(pos.entry_price):'لا توجد صفقة'}</div></div>
+      <div class="stat-card"><div class="stat-label">🔍 شموع فُحصت</div><div class="stat-val" style="color:var(--purple)">${candles.length}</div><div class="stat-sub">كل 4 ساعات</div></div>
+    </div>
+
+    <div class="two-col">
+      <div class="card">
+        <div class="card-hdr">
+          <div><div class="card-title">📊 مخطط ${activeSymbol} 4H</div><div class="card-sub">EMA 8 (أزرق) · EMA 30 (برتقالي) · ▲ دخول 🔴 خروج · ● إشارة</div></div>
+        </div>
+        <canvas id="chart"></canvas>
+      </div>
+
+      <div class="card decisions">
+        <div class="card-hdr"><div class="card-title">🧠 قرارات البوت (شمعة بشمعة)</div></div>
+        ${renderFeed(candles)}
+      </div>
+    </div>
+
+    ${lastC ? renderSignal(lastC, state) : ''}
+    ${trades.length ? renderTrades(trades) : ''}
+    ${renderLog(candles)}
+  `;
+
+  drawChart(candles, state);
+}
+
+function renderFeed(candles) {
+  if (candles.length === 0) return '<p style="color:var(--muted);text-align:center;padding:20px;">لا توجد بيانات سجلات متاحة حالياً.</p>';
+  return [...candles].reverse().slice(0,35).map(c => {
+    const {crossUp, rsiOk, allOk} = signal(c);
+    let cls = 'r-wait', txt = '⏳ انتظار — ';
+    const fails = [];
+    if (!crossUp) fails.push('لا تقاطع EMA صاعد');
+    if (!c.dailyUp) fails.push('اتجاه يومي هابط');
+    if (!rsiOk) fails.push(`RSI=${c.rsi.toFixed(1)} أقل من 40`);
+    if (allOk) { cls='r-enter'; txt='🚀 إشارة دخول! كل الشروط مكتملة'; }
+    else txt += fails.join(' · ');
+    return `<div class="dec-item">
+      <div class="dec-time">🕐 ${c.logTime.substring(0,16)} | شمعة ${c.candleTime.substring(5,16)}</div>
+      <div class="pills">
+        <span class="pill p-gray">$${c.close.toLocaleString()}</span>
+        <span class="pill p-blue">F:${c.emaFast.toFixed(0)}</span>
+        <span class="pill p-org">S:${c.emaSlow.toFixed(0)}</span>
+        <span class="pill p-pur">RSI:${c.rsi.toFixed(1)}</span>
+        <span class="pill p-gray">ATR:${c.atr.toFixed(0)}</span>
+      </div>
+      <div class="dec-reason ${cls}">${txt}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderSignal(c, state) {
+  const {crossUp, rsiOk, allOk} = signal(c);
+  const reasons = [
+    { pass: crossUp, text: crossUp ? `EMA سريع (${c.emaFast.toFixed(0)}) > EMA بطيء (${c.emaSlow.toFixed(0)}) ✓ تقاطع صاعد` : `EMA سريع (${c.emaFast.toFixed(0)}) < EMA بطيء (${c.emaSlow.toFixed(0)}) ✗ لا تقاطع` },
+    { pass: c.dailyUp, text: c.dailyUp ? 'الاتجاه اليومي صاعد (السعر فوق EMA 21 يومي) ✓' : 'الاتجاه اليومي هابط ✗ — شرط أساسي مفقود' },
+    { pass: rsiOk, text: rsiOk ? `RSI = ${c.rsi.toFixed(1)} في النطاق المقبول (≥40) ✓` : `RSI = ${c.rsi.toFixed(1)} — تشبع بيعي، يجب أن يكون ≥40 ✗` }
+  ];
+  const expectedRisk = (state.balance * 0.02).toFixed(2);
+  const slDist = (c.atr * 2).toFixed(0);
+  const tpDist = (c.atr * 2 * 2.5).toFixed(0);
+
+  return `
+  <div class="signal-panel">
+    <div class="card-hdr">
+      <div><div class="card-title">🔭 تحليل الإشارة الحالية — آخر شمعة 4H</div><div class="card-sub">${c.logTime.substring(0,16)}</div></div>
+      <span class="tbadge ${allOk?'tb-green':'tb-red'}">${allOk?'✅ شروط الدخول مكتملة!':'⏳ انتظار — الشروط غير مكتملة'}</span>
+    </div>
+    <div class="sig-grid">
+      <div class="sig-item">
+        <div class="sig-name">📉 تقاطع EMA (8/30)</div>
+        <div class="sig-val" style="color:${crossUp?'var(--green)':'var(--red)'}">${crossUp?'صاعد ✓':'هابط ✗'}</div>
+        <div class="sig-hint" style="color:${crossUp?'var(--green)':'var(--red)'}">${c.emaFast.toFixed(0)} ${crossUp?'>':'<'} ${c.emaSlow.toFixed(0)}</div>
+      </div>
+      <div class="sig-item">
+        <div class="sig-name">📈 الاتجاه اليومي</div>
+        <div class="sig-val" style="color:${c.dailyUp?'var(--green)':'var(--red)'}">${c.dailyUp?'صاعد ✓':'هابط ✗'}</div>
+        <div class="sig-hint" style="color:${c.dailyUp?'var(--green)':'var(--red)'}">${c.dailyUp?'فوق EMA 21 يومي':'تحت EMA 21 يومي'}</div>
+      </div>
+      <div class="sig-item">
+        <div class="sig-name">⚡ RSI (14)</div>
+        <div class="sig-val" style="color:${rsiOk?(c.rsi>=70?'var(--yellow)':'var(--green)'):'var(--red)'}">${c.rsi.toFixed(1)} ${rsiOk?'✓':'✗'}</div>
+        <div class="sig-hint" style="color:${rsiOk?'var(--green)':'var(--red)'}">${c.rsi>=70?'⚠️ تشبع شرائي':c.rsi<40?'🔴 تشبع بيعي':'✓ النطاق المقبول'}</div>
+      </div>
+    </div>
+    <div class="why-box">
+      <div class="why-title">${allOk?'🚀 لماذا سيدخل البوت؟':'🚫 لماذا لا يدخل البوت؟'}</div>
+      ${reasons.map(r=>`<div class="why-row"><div class="why-icon">${r.pass?'✅':'❌'}</div><div>${r.text}</div></div>`).join('')}
+      <div style="height:1px;background:var(--border);margin:10px 0"></div>
+      <div class="why-row"><div class="why-icon">📏</div><div>ATR = <strong>${c.atr.toFixed(0)}</strong> → وقف الخسارة بُعده <strong>$${slDist}</strong> · الهدف بُعده <strong>$${tpDist}</strong> (RR 2.5×)</div></div>
+      <div class="why-row"><div class="why-icon">💰</div><div>مخاطرة 2% = <strong>$${expectedRisk}</strong></div></div>
+    </div>
+  </div>`;
+}
+
+function renderTrades(trades) {
+  const rows = trades.map((t,i) => {
+    const pnlPct = ((t.pnl / (t.balance_after - t.pnl)) * 100).toFixed(2);
+    const rClass = t.reason?.includes('STOP') ? 'tb-red' : t.reason?.includes('TAKE') ? 'tb-green' : 'tb-yellow';
+    const rLabel = t.reason?.includes('STOP') ? '🔴 وقف خسارة' : t.reason?.includes('TAKE') ? '🟢 هدف ربح' : '🔄 إشارة عكسية';
+    return `<tr>
+      <td style="font-size:11px">${fmtDate(t.entry_time)}</td>
+      <td style="font-size:11px">${fmtDate(t.exit_time)}</td>
+      <td>${fmtPrice(t.entry_price)}</td>
+      <td>${fmtPrice(t.exit_price)}</td>
+      <td style="color:${pnlColor(t.pnl)};font-weight:700">${sign(t.pnl)}${fmtPrice(t.pnl)}</td>
+      <td style="color:${pnlColor(t.pnl)}">${sign(t.pnl)}${pnlPct}%</td>
+      <td>${fmtPrice(t.balance_after)}</td>
+      <td><span class="tbadge ${rClass}">${rLabel}</span></td>
+    </tr>`;
+  }).join('');
+
+  return `<div class="full-card">
+    <div class="card-hdr"><div class="card-title">📋 سجل الصفقات</div></div>
+    <table>
+      <thead><tr><th>دخول</th><th>خروج</th><th>سعر الدخول</th><th>سعر الخروج</th><th>ر/خ</th><th>%</th><th>الرصيد بعدها</th><th>السبب</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+  </div>`;
+}
+
+function renderLog(candles) {
+  if(candles.length === 0) return '';
+  const last = [...candles].reverse().slice(0,25);
+  return `<div class="full-card">
+    <div class="card-hdr"><div class="card-title">📜 السجل التفصيلي — آخر 25 شمعة 4H</div></div>
+    <table>
+      <thead><tr><th>وقت الفحص</th><th>السعر</th><th>EMA 8</th><th>EMA 30</th><th>RSI</th><th>ATR</th><th>يومي↑</th><th>EMA↑</th><th>القرار</th></tr></thead>
+      <tbody>${last.map(c => {
+        const {crossUp, allOk} = signal(c);
+        return `<tr>
+          <td style="font-size:11px">${c.logTime.substring(5,16)}</td>
+          <td style="font-weight:600">$${c.close.toLocaleString()}</td>
+          <td style="color:var(--blue)">${c.emaFast.toFixed(0)}</td>
+          <td style="color:var(--orange)">${c.emaSlow.toFixed(0)}</td>
+          <td style="color:${c.rsi<40?'var(--red)':c.rsi>70?'var(--yellow)':'var(--green)'}">${c.rsi.toFixed(1)}${c.rsi<40?' ⚠️':''}</td>
+          <td>${c.atr.toFixed(0)}</td>
+          <td>${c.dailyUp?'✅':'❌'}</td>
+          <td style="color:${crossUp?'var(--green)':'var(--red)'};font-size:14px">${crossUp?'↑':'↓'}</td>
+          <td><span class="tbadge ${allOk?'tb-green':'tb-red'}">${allOk?'🚀 إشارة':'⏳ انتظار'}</span></td>
+        </tr>`;
+      }).join('')}</tbody>
+    </table>
+  </div>`;
+}
+
+function drawChart(candles, state) {
+  const canvas = document.getElementById('chart');
+  if (!canvas || candles.length < 3) return;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.parentElement.offsetWidth - 40;
+  const H = 300;
+  canvas.width = W; canvas.height = H;
+  const disp = candles.slice(-45);
+  const pL=55, pR=15, pT=20, pB=45;
+  const cW=W-pL-pR, cH=H-pT-pB;
+
+  const all = disp.flatMap(c=>[c.close, c.emaFast, c.emaSlow]);
+  const minP=Math.min(...all)*0.998, maxP=Math.max(...all)*1.002, rng=maxP-minP;
+
+  const py = p => pT + cH - ((p-minP)/rng)*cH;
+  const px = i => pL + (i+0.5)*(cW/disp.length);
+
+  ctx.strokeStyle='rgba(42,47,69,.8)'; ctx.lineWidth=1;
+  for(let i=0;i<=5;i++){
+    const y=pT+(cH/5)*i;
+    ctx.beginPath(); ctx.setLineDash([3,6]); ctx.moveTo(pL,y); ctx.lineTo(W-pR,y); ctx.stroke();
+    ctx.fillStyle='#64748b'; ctx.font='10px sans-serif'; ctx.textAlign='right';
+    ctx.fillText('$'+(maxP-(rng/5)*i).toFixed(0), pL-5, y+4);
+  }
+  ctx.setLineDash([]);
+
+  ctx.beginPath();
+  disp.forEach((c,i) => i===0 ? ctx.moveTo(px(i),py(c.emaFast)) : ctx.lineTo(px(i),py(c.emaFast)));
+  for(let i=disp.length-1;i>=0;i--) ctx.lineTo(px(i),py(disp[i].emaSlow));
+  ctx.closePath(); ctx.fillStyle='rgba(96,165,250,.04)'; ctx.fill();
+
+  ctx.beginPath(); ctx.strokeStyle='#f97316'; ctx.lineWidth=1.5;
+  disp.forEach((c,i) => i===0 ? ctx.moveTo(px(i),py(c.emaSlow)) : ctx.lineTo(px(i),py(c.emaSlow)));
+  ctx.stroke();
+
+  ctx.beginPath(); ctx.strokeStyle='#60a5fa'; ctx.lineWidth=2;
+  disp.forEach((c,i) => i===0 ? ctx.moveTo(px(i),py(c.emaFast)) : ctx.lineTo(px(i),py(c.emaFast)));
+  ctx.stroke();
+
+  ctx.beginPath(); ctx.strokeStyle='rgba(226,232,240,.5)'; ctx.lineWidth=1;
+  disp.forEach((c,i) => i===0 ? ctx.moveTo(px(i),py(c.close)) : ctx.lineTo(px(i),py(c.close)));
+  ctx.stroke();
+
+  disp.forEach((c,i) => {
+    if (signal(c).allOk) {
+      ctx.beginPath(); ctx.arc(px(i), py(c.close)-8, 4, 0, Math.PI*2);
+      ctx.fillStyle='#22c55e'; ctx.fill();
+    }
+  });
+
+  (state.trades||[]).forEach(t => {
+    const eDay = t.entry_time.substring(0,10);
+    const xDay = t.exit_time.substring(0,10);
+    disp.forEach((c,i) => {
+      if (c.logTime.startsWith(eDay)) {
+        const x=px(i), y=py(t.entry_price);
+        ctx.beginPath(); ctx.moveTo(x-7,y+10); ctx.lineTo(x,y); ctx.lineTo(x+7,y+10);
+        ctx.fillStyle='#22c55e'; ctx.fill();
+      }
+      if (c.logTime.startsWith(xDay)) {
+        const x=px(i), y=py(t.exit_price);
+        ctx.beginPath(); ctx.arc(x,y,6,0,Math.PI*2); ctx.fillStyle='#ef4444'; ctx.fill();
+        ctx.strokeStyle='#fff'; ctx.lineWidth=1.5;
+        ctx.beginPath(); ctx.moveTo(x-3,y-3); ctx.lineTo(x+3,y+3); ctx.moveTo(x+3,y-3); ctx.lineTo(x-3,y+3); ctx.stroke();
+      }
+    });
+  });
+
+  ctx.fillStyle='#64748b'; ctx.font='9px sans-serif'; ctx.textAlign='center';
+  disp.forEach((c,i) => { if(i%5===0) ctx.fillText(c.logTime.substring(5,10), px(i), H-5); });
+}
+
+loadAll();
+setInterval(loadAll, 300000);
+</script>
+</body>
+</html>
