@@ -1,8 +1,14 @@
 {
     "balance": 978.5290205207787,
     "initial_balance": 1000.0,
-    "position": null,
-    "last_processed_candle_time": 1789689600000,
+    "position": {
+        "entry_time": "2026-09-18 09:47:39.265852+00:00",
+        "entry_price": 2510.2459429999994,
+        "sl": 2433.8155629250446,
+        "tp": 2701.3218931873866,
+        "units": 0.25605760943780215
+    },
+    "last_processed_candle_time": 1789704000000,
     "trades": [
         {
             "entry_time": "2026-09-11 17:17:20.389328+00:00",
