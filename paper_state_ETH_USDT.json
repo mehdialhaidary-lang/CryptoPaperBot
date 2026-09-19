@@ -8,7 +8,7 @@
         "tp": 2701.3218931873866,
         "units": 0.25605760943780215
     },
-    "last_processed_candle_time": 1789819200000,
+    "last_processed_candle_time": 1789833600000,
     "trades": [
         {
             "entry_time": "2026-09-11 17:17:20.389328+00:00",
@@ -20,5 +20,5 @@
             "balance_after": 978.5290205207787
         }
     ],
-    "last_heartbeat_time": 1789824471.1484542
+    "last_heartbeat_time": 1789853122.2066
 }
