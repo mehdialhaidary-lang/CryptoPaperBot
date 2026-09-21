@@ -1,14 +1,8 @@
 {
-    "balance": 978.5290205207787,
+    "balance": 1025.6373083126748,
     "initial_balance": 1000.0,
-    "position": {
-        "entry_time": "2026-09-18 09:47:39.265852+00:00",
-        "entry_price": 2510.2459429999994,
-        "sl": 2433.8155629250446,
-        "tp": 2701.3218931873866,
-        "units": 0.25605760943780215
-    },
-    "last_processed_candle_time": 1789948800000,
+    "position": null,
+    "last_processed_candle_time": 1789977600000,
     "trades": [
         {
             "entry_time": "2026-09-11 17:17:20.389328+00:00",
@@ -18,7 +12,16 @@
             "pnl": -21.470979479221313,
             "reason": "STOP LOSS \ud83d\udd34 (Live Hit)",
             "balance_after": 978.5290205207787
+        },
+        {
+            "entry_time": "2026-09-18 09:47:39.265852+00:00",
+            "exit_time": "2026-09-21 13:46:15.343384+00:00",
+            "entry_price": 2510.2459429999994,
+            "exit_price": 2699.4309678621557,
+            "pnl": 47.108287791896224,
+            "reason": "TAKE PROFIT \ud83d\udfe2 (Live Hit)",
+            "balance_after": 1025.6373083126748
         }
     ],
-    "last_heartbeat_time": 1789973698.6444461
+    "last_heartbeat_time": 1789998376.8853593
 }
