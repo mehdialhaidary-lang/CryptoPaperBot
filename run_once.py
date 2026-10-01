@@ -1,4 +1,4 @@
-﻿"""
+"""
 نسخة تشغيل واحدة (Single-Run) — مخصصة للتشغيل عبر GitHub Actions.
 كل تشغيلة: تحمّل الحالة لكل زوج -> تفحص -> تحفظ -> تخرج.
 """
@@ -34,12 +34,42 @@ def send_heartbeat_if_due(exchange):
             logging.error(f"[{symbol}] خطأ في نبضة الحياة: {e}")
 
 
+def run_shadow_sidecar(exchange, symbol: str):
+    """تشغيل تقييم نظام الـ QDS في وضع الظل (Shadow Mode) دون التأثير على التداول الفعلي."""
+    try:
+        from paper_trading import fetch_strict_data
+        df_4h = fetch_strict_data(exchange, symbol)
+        if df_4h is not None and len(df_4h) >= 50:
+            ticker = exchange.fetch_ticker(symbol)
+            cur_price = ticker['last']
+            all_states = {s: load_state(s) for s in SYMBOLS_CONFIG}
+            leg_state = all_states.get(symbol, {})
+            leg_pos = leg_state.get('position')
+            legacy_dec = "BUY" if leg_pos is not None else "WAIT"
+            
+            import shadow_engine
+            shadow_engine.evaluate_shadow_qds_cycle(
+                symbol=symbol,
+                df_4h=df_4h,
+                df_1d=None,
+                legacy_decision=legacy_dec,
+                current_price=cur_price,
+                symbol_states=all_states
+            )
+    except Exception as e:
+        logging.warning(f"[{symbol}] ⚠️ Sidecar QDS Evaluation skipped: {e}")
+
+
 def run_symbol(exchange, symbol: str):
     """تشغيل دورة كاملة لزوج واحد."""
     try:
         state = load_state(symbol)
         monitor_live_position(exchange, state, symbol)
         evaluate_signals_on_candle_close(exchange, state, symbol)
+        
+        # 👤 تشغيل محرك الظل QDS بالتوازي (Sidecar Shadow Evaluation)
+        run_shadow_sidecar(exchange, symbol)
+        
         logging.info(f"[{symbol}] ✅ الدورة مكتملة.")
     except (ccxt.RequestTimeout, ccxt.NetworkError) as ne:
         logging.warning(f"[{symbol}] ⚠️ انقطاع شبكة مؤقت: {ne}")

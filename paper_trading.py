@@ -243,7 +243,7 @@ def load_state(symbol: str = 'BTC/USDT') -> dict:
     }
     if os.path.exists(state_file):
         try:
-            with open(state_file, 'r', encoding='utf-8') as f:
+            with open(state_file, 'r', encoding='utf-8-sig') as f:
                 saved = json.load(f)
             if not isinstance(saved, dict):
                 raise ValueError('صيغة ملف الحالة غير صالحة')
