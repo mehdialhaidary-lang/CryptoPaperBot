@@ -103,6 +103,9 @@
 <div class="tabs" id="tabsContainer">
   <div class="tab active" onclick="switchTab('BTC/USDT')">₿ BTC/USDT</div>
   <div class="tab" onclick="switchTab('ETH/USDT')">⟠ ETH/USDT</div>
+  <div class="tab" onclick="switchTab('SOL/USDT')">◎ SOL/USDT</div>
+  <div class="tab" onclick="switchTab('LINK/USDT')">⬡ LINK/USDT</div>
+  <div class="tab" onclick="switchTab('BNB/USDT')">🔶 BNB/USDT</div>
 </div>
 
 <div class="container">
@@ -117,26 +120,26 @@
 <script>
 const REPO = 'mehdialhaidary-lang/CryptoPaperBot';
 const RAW = `https://raw.githubusercontent.com/${REPO}/main`;
+const ALL_SYMBOLS = ['BTC/USDT', 'ETH/USDT', 'SOL/USDT', 'LINK/USDT', 'BNB/USDT'];
 
-let appData = {
-  'BTC/USDT': { state: null, candles: [] },
-  'ETH/USDT': { state: null, candles: [] }
-};
+let appData = {};
+ALL_SYMBOLS.forEach(s => appData[s] = { state: null, candles: [] });
 let activeSymbol = 'BTC/USDT';
 
 async function loadAll() {
   setBadge('loading');
   try {
-    const [btcRes, ethRes, logRes] = await Promise.all([
-      fetch(`${RAW}/paper_state_BTC_USDT.json?t=${Date.now()}`),
-      fetch(`${RAW}/paper_state_ETH_USDT.json?t=${Date.now()}`),
-      fetch(`${RAW}/trading_bot.log?t=${Date.now()}`)
-    ]);
+    const fetches = ALL_SYMBOLS.map(s => fetch(`${RAW}/paper_state_${s.replace('/','_')}.json?t=${Date.now()}`));
+    fetches.push(fetch(`${RAW}/trading_bot.log?t=${Date.now()}`));
     
-    if (!btcRes.ok || !ethRes.ok) throw new Error('فشل تحميل ملفات الحالة');
+    const results = await Promise.all(fetches);
+    const logRes = results.pop();
     
-    appData['BTC/USDT'].state = await btcRes.json();
-    appData['ETH/USDT'].state = await ethRes.json();
+    for (let i = 0; i < ALL_SYMBOLS.length; i++) {
+      if (results[i].ok) {
+        appData[ALL_SYMBOLS[i]].state = await results[i].json();
+      }
+    }
     
     parseLog(await logRes.text());
     
@@ -163,14 +166,11 @@ function setBadge(s) {
 }
 
 function parseLog(text) {
-  appData['BTC/USDT'].candles = [];
-  appData['ETH/USDT'].candles = [];
+  ALL_SYMBOLS.forEach(s => appData[s].candles = []);
   
   text.split('\n').forEach(line => {
-    // New format with symbol: [INFO] 📊 [BTC/USDT] شمعة مغلقة ...
-    let m = line.match(/(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}),\d+ \[INFO\].*\[(BTC\/USDT|ETH\/USDT)\].*\[(\d{4}-\d{2}-\d{2} \S+)\] \| Close: \$([\d,]+\.?\d*) \| (?:Fast EMA|EMA Fast): ([\d.]+) \| (?:Slow EMA|EMA Slow): ([\d.]+) \| RSI: ([\d.]+) \| ATR: ([\d.]+) \| Daily Trend Up: (True|False)/i);
+    let m = line.match(/(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}),\d+ \[INFO\].*\[([A-Z0-9]+\/USDT)\].*\[(\d{4}-\d{2}-\d{2} \S+)\] \| Close: \$([\d,]+\.?\d*) \| (?:Fast EMA|EMA Fast): ([\d.]+) \| (?:Slow EMA|EMA Slow): ([\d.]+) \| RSI: ([\d.]+) \| ATR: ([\d.]+) \| Daily Trend Up: (True|False)/i);
     
-    // Fallback for old logs without symbol (assume BTC)
     if (!m) {
       const oldM = line.match(/(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}),\d+ \[INFO\].*شمعة مغلقة.*\[(\d{4}-\d{2}-\d{2} \S+)\] \| Close: \$([\d,]+\.?\d*) \| Fast EMA: ([\d.]+) \| Slow EMA: ([\d.]+) \| RSI: ([\d.]+) \| ATR: ([\d.]+) \| Daily Trend Up: (True|False)/i);
       if (oldM) m = [oldM[0], oldM[1], 'BTC/USDT', oldM[2], oldM[3], oldM[4], oldM[5], oldM[6], oldM[7], oldM[8]];
@@ -178,13 +178,15 @@ function parseLog(text) {
 
     if (m) {
       const symbol = m[2];
-      appData[symbol].candles.push({
-        logTime: m[1], candleTime: m[3],
-        close: parseFloat(m[4].replace(/,/g,'')),
-        emaFast: parseFloat(m[5]), emaSlow: parseFloat(m[6]),
-        rsi: parseFloat(m[7]), atr: parseFloat(m[8]),
-        dailyUp: m[9] === 'True'
-      });
+      if (appData[symbol]) {
+        appData[symbol].candles.push({
+          logTime: m[1], candleTime: m[3],
+          close: parseFloat(m[4].replace(/,/g,'')),
+          emaFast: parseFloat(m[5]), emaSlow: parseFloat(m[6]),
+          rsi: parseFloat(m[7]), atr: parseFloat(m[8]),
+          dailyUp: m[9] === 'True'
+        });
+      }
     }
   });
 }

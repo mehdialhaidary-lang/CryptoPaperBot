@@ -40,6 +40,30 @@ SYMBOLS_CONFIG = {
         'initial_balance': 1000.0, 'heartbeat_interval_hours': 6,
         'max_trade_duration_hours': 48,
     },
+    'SOL/USDT': {
+        'timeframe': '4h', 'fast_ema': 8, 'slow_ema': 30,
+        'rsi_period': 14, 'atr_period': 14, 'atr_mult': 2.0,
+        'rr_ratio': 2.5, 'risk_pct': 0.02,
+        'commission_pct': 0.001, 'slippage_pct': 0.0005, 'spread_pct': 0.0002,
+        'initial_balance': 1000.0, 'heartbeat_interval_hours': 6,
+        'max_trade_duration_hours': 48,
+    },
+    'LINK/USDT': {
+        'timeframe': '4h', 'fast_ema': 8, 'slow_ema': 30,
+        'rsi_period': 14, 'atr_period': 14, 'atr_mult': 2.0,
+        'rr_ratio': 2.5, 'risk_pct': 0.02,
+        'commission_pct': 0.001, 'slippage_pct': 0.0005, 'spread_pct': 0.0002,
+        'initial_balance': 1000.0, 'heartbeat_interval_hours': 6,
+        'max_trade_duration_hours': 48,
+    },
+    'BNB/USDT': {
+        'timeframe': '4h', 'fast_ema': 8, 'slow_ema': 30,
+        'rsi_period': 14, 'atr_period': 14, 'atr_mult': 2.0,
+        'rr_ratio': 2.5, 'risk_pct': 0.02,
+        'commission_pct': 0.001, 'slippage_pct': 0.0005, 'spread_pct': 0.0002,
+        'initial_balance': 1000.0, 'heartbeat_interval_hours': 6,
+        'max_trade_duration_hours': 48,
+    },
 }
 
 CONFIG = SYMBOLS_CONFIG['BTC/USDT']

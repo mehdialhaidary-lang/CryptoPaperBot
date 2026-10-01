@@ -1,0 +1,8 @@
+﻿{
+    "balance": 1000.0,
+    "initial_balance": 1000.0,
+    "position": null,
+    "last_processed_candle_time": 0,
+    "trades": [],
+    "last_heartbeat_time": 0
+}
