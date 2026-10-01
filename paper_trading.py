@@ -374,16 +374,36 @@ def monitor_live_position(exchange, state: dict, symbol: str = 'BTC/USDT'):
 
     if exit_price is None:
         return
+    
+    # حساب محدد وسلس للربح/الخسارة مع الرسوم والانزلاق
+    units = pos['units']
+    notional_entry = entry_price * units
+    notional_exit  = exit_price * units
+    gross_pnl_usd  = notional_exit - notional_entry
+    slippage_usd   = (notional_entry + notional_exit) * (cfg['slippage_pct'] + cfg['spread_pct'])
+    fees_usd       = (notional_entry + notional_exit) * cfg['commission_pct']
+    net_pnl        = gross_pnl_usd - slippage_usd - fees_usd
     effective_exit = exit_price * (1 - cfg['slippage_pct'] - cfg['spread_pct'])
-    gross_pnl  = (effective_exit - entry_price) * units
-    total_fees = (entry_price * units * cfg['commission_pct']) + \
-                 (effective_exit * units * cfg['commission_pct'])
-    net_pnl    = gross_pnl - total_fees
+    
+    # ترميز سبب الخروج المعياري
+    norm_exit_reason = "STOP_LOSS"
+    if "TAKE PROFIT" in str(exit_reason):
+        norm_exit_reason = "TAKE_PROFIT"
+    elif "TRAILING STOP" in str(exit_reason):
+        norm_exit_reason = "TRAILING_STOP"
+    elif "TIME EXIT" in str(exit_reason):
+        norm_exit_reason = "TIME_EXIT"
+
     state['balance'] += net_pnl
     state['trades'].append({
         'entry_time': pos['entry_time'], 'exit_time': str(datetime.now(timezone.utc)),
         'entry_price': entry_price, 'exit_price': effective_exit,
-        'pnl': net_pnl, 'reason': exit_reason, 'balance_after': state['balance'],
+        'gross_pnl_usd': round(gross_pnl_usd, 4),
+        'fees_usd': round(fees_usd, 4),
+        'slippage_usd': round(slippage_usd, 4),
+        'pnl': round(net_pnl, 4), 'reason': exit_reason,
+        'exit_reason': norm_exit_reason,
+        'balance_after': state['balance'],
     })
     state['position'] = None
     save_state(state, symbol)
@@ -427,16 +447,26 @@ def evaluate_signals_on_candle_close(exchange, state: dict, symbol: str = 'BTC/U
                      (closed_candle['ema_fast'] < closed_candle['ema_slow'])
         if cross_down:
             ticker   = exchange.fetch_ticker(symbol)
-            eff_exit = ticker['last'] * (1 - cfg['slippage_pct'] - cfg['spread_pct'])
-            gross    = (eff_exit - pos['entry_price']) * pos['units']
-            fees     = (pos['entry_price'] * pos['units'] * cfg['commission_pct']) + \
-                       (eff_exit * pos['units'] * cfg['commission_pct'])
-            net_pnl  = gross - fees
+            raw_exit = ticker['last']
+            units    = pos['units']
+            notional_entry = pos['entry_price'] * units
+            notional_exit  = raw_exit * units
+            gross_pnl_usd  = notional_exit - notional_entry
+            slippage_usd   = (notional_entry + notional_exit) * (cfg['slippage_pct'] + cfg['spread_pct'])
+            fees_usd       = (notional_entry + notional_exit) * cfg['commission_pct']
+            net_pnl        = gross_pnl_usd - slippage_usd - fees_usd
+            eff_exit       = raw_exit * (1 - cfg['slippage_pct'] - cfg['spread_pct'])
+            
             state['balance'] += net_pnl
             state['trades'].append({
                 'entry_time': pos['entry_time'], 'exit_time': str(closed_candle['datetime']),
                 'entry_price': pos['entry_price'], 'exit_price': eff_exit,
-                'pnl': net_pnl, 'reason': 'REVERSE SIGNAL 🔄',
+                'gross_pnl_usd': round(gross_pnl_usd, 4),
+                'fees_usd': round(fees_usd, 4),
+                'slippage_usd': round(slippage_usd, 4),
+                'pnl': round(net_pnl, 4),
+                'reason': 'REVERSE SIGNAL 🔄',
+                'exit_reason': 'REVERSE_CROSS',
                 'balance_after': state['balance'],
             })
             state['position'] = None

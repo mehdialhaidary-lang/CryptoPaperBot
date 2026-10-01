@@ -105,9 +105,16 @@ def build_trade_record(
         "take_profit_price": take_profit_price,
         "exit_price": 0.0,
         "hypothetical_exit": 0.0,
+        "exit_reason": "NONE" if (legacy_decision == "WAIT" and qds_decision == "WAIT") else "PENDING",
         "status": "OPEN" if (legacy_decision == "BUY" or qds_decision == "BUY") else "CLOSED",
         "outcome": "PENDING" if (legacy_decision == "BUY" or qds_decision == "BUY") else "SKIPPED",
-        "pnl_usd": 0.0,
+        
+        # PnL Accounting Breakdown
+        "gross_pnl_usd": 0.0,
+        "fees_usd": 0.0,
+        "slippage_usd": 0.0,
+        "net_pnl_usd": 0.0,
+        "pnl_usd": 0.0,  # alias for net_pnl_usd
         "pnl_pct": 0.0,
         "duration_hours": 0.0,
         
@@ -122,6 +129,35 @@ def build_trade_record(
             "24h": None,
             "48h": None
         }
+    }
+
+def calculate_pnl_breakdown(
+    entry_price: float,
+    exit_price: float,
+    units: float,
+    commission_pct: float = 0.001,
+    slippage_pct: float = 0.0005,
+    spread_pct: float = 0.0002
+) -> dict:
+    """حسبة دقيقة وشفافة للربح/الخسارة مفصلة إلى Gross و Fees و Slippage و Net."""
+    if entry_price <= 0 or units <= 0:
+        return {"gross_pnl_usd": 0.0, "fees_usd": 0.0, "slippage_usd": 0.0, "net_pnl_usd": 0.0, "pnl_pct": 0.0}
+
+    notional_entry = entry_price * units
+    notional_exit  = exit_price * units
+    
+    gross_pnl_usd = notional_exit - notional_entry
+    slippage_usd  = (notional_entry + notional_exit) * (slippage_pct + spread_pct)
+    fees_usd      = (notional_entry + notional_exit) * commission_pct
+    net_pnl_usd   = gross_pnl_usd - slippage_usd - fees_usd
+    pnl_pct       = (net_pnl_usd / notional_entry) * 100.0 if notional_entry > 0 else 0.0
+
+    return {
+        "gross_pnl_usd": round(gross_pnl_usd, 4),
+        "fees_usd": round(fees_usd, 4),
+        "slippage_usd": round(slippage_usd, 4),
+        "net_pnl_usd": round(net_pnl_usd, 4),
+        "pnl_pct": round(pnl_pct, 4)
     }
 
 def record_decision_event(record: dict):
