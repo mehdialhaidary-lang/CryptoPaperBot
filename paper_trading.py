@@ -30,6 +30,7 @@ SYMBOLS_CONFIG = {
         'rr_ratio': 2.5, 'risk_pct': 0.02,
         'commission_pct': 0.001, 'slippage_pct': 0.0005, 'spread_pct': 0.0002,
         'initial_balance': 1000.0, 'heartbeat_interval_hours': 6,
+        'max_trade_duration_hours': 48,
     },
     'ETH/USDT': {
         'timeframe': '4h', 'fast_ema': 8, 'slow_ema': 30,
@@ -37,6 +38,7 @@ SYMBOLS_CONFIG = {
         'rr_ratio': 2.5, 'risk_pct': 0.02,
         'commission_pct': 0.001, 'slippage_pct': 0.0005, 'spread_pct': 0.0002,
         'initial_balance': 1000.0, 'heartbeat_interval_hours': 6,
+        'max_trade_duration_hours': 48,
     },
 }
 
@@ -315,15 +317,36 @@ def monitor_live_position(exchange, state: dict, symbol: str = 'BTC/USDT'):
             logging.info(f"↗️ [{symbol}] رفع وقف الخسارة المتحرك: ${old_sl:,.2f} -> ${new_sl:,.2f} (قمة جديدة: ${current_price:,.2f})")
 
     exit_price, exit_reason = None, None
-    if current_price <= sl:
-        exit_price  = sl
-        if sl > entry_price:
-            exit_reason = 'TRAILING STOP 🟢 (حجز الأرباح)'
-        else:
-            exit_reason = 'STOP LOSS 🔴 (Live Hit)'
-    elif current_price >= tp:
-        exit_price  = tp
-        exit_reason = 'TAKE PROFIT 🟢 (Live Hit)'
+
+    # ⏳ 1. خوارزمية التخلص من الصفقات الركودة (Time-Based Dead Trade Exit)
+    entry_str = pos.get('entry_time', '')
+    try:
+        entry_dt = datetime.fromisoformat(entry_str.replace('Z', '+00:00'))
+        now_dt   = datetime.now(timezone.utc)
+        elapsed_hours = (now_dt - entry_dt).total_seconds() / 3600
+        max_hours = cfg.get('max_trade_duration_hours', 48)
+        
+        atr_dist = pos.get('atr_dist', (tp - entry_price) / cfg['rr_ratio'])
+        pnl_dist = current_price - entry_price
+        
+        # إذا مرت 48 ساعة ولم تحقق الصفقة على الأقل 1.0x ATR ربحاً، يُغلق الصفقة لتسريح السيولة
+        if elapsed_hours >= max_hours and pnl_dist < atr_dist:
+            exit_price  = current_price
+            exit_reason = f'TIME EXIT ⏳ (استغرق {elapsed_hours:.0f}h دون زخم)'
+    except Exception as e:
+        logging.warning(f"⚠️ خطأ في حسبة مدة الصفقة: {e}")
+
+    # 2. فحص وقف الخسارة وجني الأرباح
+    if exit_price is None:
+        if current_price <= sl:
+            exit_price  = sl
+            if sl > entry_price:
+                exit_reason = 'TRAILING STOP 🟢 (حجز الأرباح)'
+            else:
+                exit_reason = 'STOP LOSS 🔴 (Live Hit)'
+        elif current_price >= tp:
+            exit_price  = tp
+            exit_reason = 'TAKE PROFIT 🟢 (Live Hit)'
 
     if exit_price is None:
         return
