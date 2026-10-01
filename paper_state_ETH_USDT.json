@@ -8,7 +8,7 @@
         "tp": 2893.774734765348,
         "units": 0.29038217918897774
     },
-    "last_processed_candle_time": 1790841600000,
+    "last_processed_candle_time": 1790856000000,
     "trades": [
         {
             "entry_time": "2026-09-11 17:17:20.389328+00:00",
@@ -16,7 +16,7 @@
             "entry_price": 2579.3442779999996,
             "exit_price": 2485.077475815567,
             "pnl": -21.470979479221313,
-            "reason": "STOP LOSS \ud83d\udd34 (Live Hit)",
+            "reason": "STOP LOSS 🔴 (Live Hit)",
             "balance_after": 978.5290205207787
         },
         {
@@ -25,7 +25,7 @@
             "entry_price": 2510.2459429999994,
             "exit_price": 2699.4309678621557,
             "pnl": 47.108287791896224,
-            "reason": "TAKE PROFIT \ud83d\udfe2 (Live Hit)",
+            "reason": "TAKE PROFIT 🟢 (Live Hit)",
             "balance_after": 1025.6373083126748
         },
         {
@@ -34,7 +34,7 @@
             "entry_price": 2706.6333179999997,
             "exit_price": 2667.7013010000005,
             "pnl": -12.479129262758828,
-            "reason": "REVERSE SIGNAL \ud83d\udd04",
+            "reason": "REVERSE SIGNAL 🔄",
             "balance_after": 1013.1581790499159
         }
     ],
