@@ -1,4 +1,4 @@
-﻿"""
+"""
 ======================================================================
  👤 SHADOW QDS ENGINE — محرك القرار المطور في وضع الظل (Sidecar Runner)
 ======================================================================
@@ -114,7 +114,23 @@ def evaluate_shadow_qds_cycle(symbol: str, df_4h: pd.DataFrame, df_1d: pd.DataFr
         decision_reason = f"QDS WAIT: {wait_reason_str} (Regime: {regime_info['regime']})"
 
     # 7. التسجيل في ذاكرة الصفقات (Trade Memory)
-    trade_id = f"shadow_{symbol.replace('/','_')}_{int(closed_candle['timestamp'])}"
+    c_time = int(closed_candle['timestamp'])
+    shadow_st = load_shadow_state()
+    last_processed = shadow_st.get("last_processed_candles", {}).get(symbol, 0)
+    is_candle_close_event = c_time > last_processed
+    if is_candle_close_event:
+        shadow_st.setdefault("last_processed_candles", {})[symbol] = c_time
+        save_shadow_state(shadow_st)
+
+    ablation_flags = {
+        "legacy_passed": legacy_decision == "BUY",
+        "tech_passed": cross_up and daily_up and rsi_ok,
+        "regime_passed": regime_info.get("is_trending", False),
+        "portfolio_risk_passed": risk_eval.get("allowed", True),
+        "news_ai_passed": gemini_data.get("safe", True)
+    }
+
+    trade_id = f"shadow_{symbol.replace('/','_')}_{c_time}"
     rec = trade_memory.build_trade_record(
         trade_id=trade_id,
         symbol=symbol,
@@ -128,7 +144,9 @@ def evaluate_shadow_qds_cycle(symbol: str, df_4h: pd.DataFrame, df_1d: pd.DataFr
         decision_reason=decision_reason,
         wait_reason=wait_reason_str,
         entry_price=current_price if legacy_decision == "BUY" else 0.0,
-        hypothetical_entry=current_price if qds_decision == "BUY" else 0.0
+        hypothetical_entry=current_price if qds_decision == "BUY" else 0.0,
+        is_candle_close_event=is_candle_close_event,
+        ablation_flags=ablation_flags
     )
     trade_memory.record_decision_event(rec)
 

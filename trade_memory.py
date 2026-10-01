@@ -1,4 +1,4 @@
-﻿"""
+"""
 ======================================================================
  💾 TRADE MEMORY MASTER SCHEMA — قاعدة بيانات ذاكرة الصفقات الموسعة
 ======================================================================
@@ -42,23 +42,37 @@ def build_trade_record(
     decision_reason: str,
     wait_reason: str = "",
     entry_price: float = 0.0,
-    hypothetical_entry: float = 0.0
+    hypothetical_entry: float = 0.0,
+    is_candle_close_event: bool = False,
+    ablation_flags: dict = None
 ) -> dict:
-    """بناء هيكل سجل صفقة جديد ومطابق للمواصفات المستقبلية."""
+    """بناء هيكل سجل صفقة جديد ومطابق للمواصفات المستقبلية بـ Ablation Flags و Disambiguation."""
+    default_ablation = {
+        "legacy_passed": legacy_decision == "BUY",
+        "tech_passed": technical_score >= 100.0,
+        "regime_passed": market_regime.get("is_trending", False),
+        "portfolio_risk_passed": risk_data.get("allowed", True),
+        "news_ai_passed": gemini_data.get("safe", True)
+    }
+    
     return {
         "trade_id": trade_id,
         "timestamp": datetime.now(timezone.utc).isoformat(),
         "symbol": symbol,
+        "is_candle_close_event": is_candle_close_event,
         "legacy_decision": legacy_decision,
         "qds_decision": qds_decision,
         
-        # 1. Market Regime Metadata
+        # 1. Ablation Testing Flags
+        "ablation_flags": ablation_flags or default_ablation,
+
+        # 2. Market Regime Metadata
         "market_regime": market_regime.get("regime", "UNKNOWN"),
         "adx": market_regime.get("adx", 0.0),
         "atr_ratio": market_regime.get("atr_ratio", 1.0),
         "bb_width": market_regime.get("bb_width", 0.0),
         
-        # 2. Scores & AI Metadata
+        # 3. Scores & AI Metadata
         "technical_score": round(technical_score, 2),
         "news_score": gemini_data.get("sentiment_score", 0.0),
         "news_impact": gemini_data.get("impact", "LOW"),
@@ -67,21 +81,21 @@ def build_trade_record(
         "source_quality": gemini_data.get("source_quality", "STANDARD"),
         "gemini_status": gemini_data.get("status", "NOT_CONFIGURED"),
         
-        # 3. Risk & Position Sizing Metadata
+        # 4. Risk & Position Sizing Metadata
         "risk_at_stop_usd": risk_data.get("trade_risk_usd", 0.0),
         "notional_position_usd": risk_data.get("notional_position_usd", 0.0),
         "portfolio_exposure_pct": risk_data.get("portfolio_total_risk_pct", 0.0),
         "correlation_risk_pct": 0.0,
         
-        # 4. Data Quality
+        # 5. Data Quality
         "data_quality_score": data_quality.get("score", 100.0),
         "data_quality_status": data_quality.get("status", "OK"),
         
-        # 5. Decision Rationale
+        # 6. Decision Rationale
         "decision_reason": decision_reason,
         "wait_reason": wait_reason,
         
-        # 6. Trade Execution & Price Tracking
+        # 7. Trade Execution & Price Tracking
         "entry_price": entry_price,
         "hypothetical_entry": hypothetical_entry,
         "exit_price": 0.0,
@@ -92,7 +106,7 @@ def build_trade_record(
         "pnl_pct": 0.0,
         "duration_hours": 0.0,
         
-        # 7. Excursion Analytics (MFE & MAE)
+        # 8. Excursion Analytics (MFE & MAE)
         "mfe_pct": 0.0,  # Maximum Favorable Excursion
         "mae_pct": 0.0   # Maximum Adverse Excursion
     }
