@@ -18,6 +18,7 @@ if hasattr(sys.stdout, 'reconfigure'):
 # =========================================================
 TELEGRAM_TOKEN   = os.getenv('TELEGRAM_TOKEN', 'ضع_التوكن_هنا')
 TELEGRAM_CHAT_ID = os.getenv('TELEGRAM_CHAT_ID', '')
+GEMINI_API_KEY   = os.getenv('GEMINI_API_KEY', '')
 
 # =========================================================
 # ⚙️ إعدادات كل زوج
@@ -52,6 +53,76 @@ logging.basicConfig(
     ]
 )
 
+# =========================================================
+# 🤖 خدمات الذكاء الاصطناعي (Gemini AI Integration)
+# =========================================================
+def query_gemini(prompt: str) -> str:
+    """إرسال طلب لنموذج Gemini 2.0 Flash ومُعالجة الإجابة."""
+    if not GEMINI_API_KEY:
+        return ""
+    try:
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={GEMINI_API_KEY}"
+        payload = json.dumps({
+            "contents": [{"parts": [{"text": prompt}]}]
+        }).encode('utf-8')
+        req = urllib.request.Request(url, data=payload, headers={'Content-Type': 'application/json'}, method='POST')
+        with urllib.request.urlopen(req, timeout=12) as response:
+            res_data = json.loads(response.read().decode('utf-8'))
+            return res_data['candidates'][0]['content']['parts'][0]['text']
+    except Exception as e:
+        logging.warning(f"⚠️ فشل استدعاء Gemini API: {e}")
+        return ""
+
+def check_gemini_news_filter(symbol: str, price: float) -> tuple:
+    """فحص المشاعر والأخبار عبر Gemini قبل الشراء. إرجاع (is_safe: bool, reason: str)"""
+    if not GEMINI_API_KEY:
+        return True, "No Gemini API key set"
+    prompt = (
+        f"أنت خبير في تقييم مخاطر الكريبتو والأخبار الحية. "
+        f"هل توجد أي أخبار سلبية حادة أو انهيار وشيك أو مخاطر تنظيمية مفاجئة تؤثر سلباً على {symbol} حالياً؟ "
+        f"السعر الحالي: ${price:,.2f}.\n"
+        f"رد بصيغة JSON فقط بهذا الشكل وبدون أي نص آخر:\n"
+        f"{{\"safe\": true, \"reason\": \"شرح مختصر باللغة العربية\"}}"
+    )
+    res = query_gemini(prompt)
+    if not res:
+        return True, "Gemini call skipped"
+    try:
+        clean_res = res.replace('```json', '').replace('```', '').strip()
+        data = json.loads(clean_res)
+        is_safe = bool(data.get('safe', True))
+        reason = str(data.get('reason', 'لا توجد مخاوف إخبارية'))
+        return is_safe, reason
+    except Exception as e:
+        logging.warning(f"⚠️ خطأ تحليل JSON من Gemini: {e}")
+        return True, "Gemini parse fallback"
+
+def generate_gemini_trade_memo(symbol: str, entry_price: float, sl: float, tp: float, risk_amt: float) -> str:
+    """إنشاء تقرير تحليلي ذكي باللغة العربية لإرفاقه برسالة تليجرام عند الشراء."""
+    if not GEMINI_API_KEY:
+        return ""
+    prompt = (
+        f"قم بكتابة فقرة تحليلية مختصرة (سطرين إلى 3 أسطر) باللغة العربية المشجعة والاحترافية لإرسالها في تليجرام لصفقة جديدة:\n"
+        f"- الزوج: {symbol}\n"
+        f"- سعر الدخول: ${entry_price:,.2f}\n"
+        f"- الهدف (TP): ${tp:,.2f}\n"
+        f"- الوقف (SL): ${sl:,.2f}\n"
+        f"اكتب تحليلاً حماسياً يوضح الرؤية العامة للعملة والنصيحة للمتداول بالإيموجي الجذاب."
+    )
+    memo = query_gemini(prompt)
+    return memo.strip() if memo else ""
+
+def generate_gemini_market_tip(symbol: str) -> str:
+    """إنشاء نصيحة سوقية سريعة لـ نبضة الحياة."""
+    if not GEMINI_API_KEY:
+        return ""
+    prompt = f"اعطني رؤية أو نصيحة استثمارية سريعة جداً في سطر واحد باللغة العربية للمستثمر في {symbol} اليوم."
+    res = query_gemini(prompt)
+    return res.strip() if res else ""
+
+# =========================================================
+# 🛠️ دوال مساعدة
+# =========================================================
 def get_config(symbol: str) -> dict:
     cfg = SYMBOLS_CONFIG.get(symbol, SYMBOLS_CONFIG['BTC/USDT']).copy()
     cfg['symbol'] = symbol
@@ -118,12 +189,17 @@ def send_heartbeat(state: dict, start_time: float, symbol: str = 'BTC/USDT'):
     pos        = state.get('position')
     pos_status = 'لا توجد صفقة مفتوحة' if pos is None else \
         f"صفقة مفتوحة @ ${pos['entry_price']:,.2f}"
+    
+    ai_tip   = generate_gemini_market_tip(symbol)
+    ai_block = f"\n\n💡 *رؤية الذكاء الاصطناعي (Gemini):*\n_{ai_tip}_" if ai_tip else ""
+
     msg = (
         f'💓 *نبضة حياة — {symbol}*\n\n'
         f'✅ البوت يعمل بشكل طبيعي (تشغيل مجدوَل)\n'
         f'💰 الرصيد الحالي: `${state["balance"]:,.2f}`\n'
         f'📍 الحالة: {pos_status}\n'
         f'🔄 عدد الصفقات المغلقة: {len(state.get("trades", []))}'
+        f'{ai_block}'
     )
     send_telegram(msg)
     logging.info(f'💓 [{symbol}] نبضة حياة (uptime: {uptime_h:.1f}h)')
@@ -141,7 +217,7 @@ def load_state(symbol: str = 'BTC/USDT') -> dict:
     }
     if os.path.exists(state_file):
         try:
-            with open(state_file, 'r') as f:
+            with open(state_file, 'r', encoding='utf-8') as f:
                 saved = json.load(f)
             if not isinstance(saved, dict):
                 raise ValueError('صيغة ملف الحالة غير صالحة')
@@ -155,8 +231,8 @@ def load_state(symbol: str = 'BTC/USDT') -> dict:
 def save_state(state: dict, symbol: str = 'BTC/USDT'):
     state_file = get_state_file(symbol)
     tmp        = state_file + '.tmp'
-    with open(tmp, 'w') as f:
-        json.dump(state, f, indent=4, default=str)
+    with open(tmp, 'w', encoding='utf-8') as f:
+        json.dump(state, f, indent=4, default=str, ensure_ascii=False)
     os.replace(tmp, state_file)
 
 def calc_wilder_atr(df: pd.DataFrame, period: int = 14) -> pd.Series:
@@ -311,25 +387,48 @@ def evaluate_signals_on_candle_close(exchange, state: dict, symbol: str = 'BTC/U
         rsi_ok   = closed_candle['rsi'] >= 40
         if cross_up and daily_up and rsi_ok:
             ticker      = exchange.fetch_ticker(symbol)
-            entry_price = ticker['last'] * (1 + cfg['slippage_pct'] + cfg['spread_pct'])
-            atr         = closed_candle['atr']
-            stop_dist   = atr * cfg['atr_mult']
-            risk_amt    = state['balance'] * cfg['risk_pct']
-            units       = min(risk_amt / stop_dist, state['balance'] / entry_price)
+            raw_entry   = ticker['last']
+            entry_price = raw_entry * (1 + cfg['slippage_pct'] + cfg['spread_pct'])
+
+            # 🛡️ الخيار 1: فحص حماية الأخبار عبر الذكاء الاصطناعي (Gemini News Safety Filter)
+            is_safe, news_reason = check_gemini_news_filter(symbol, entry_price)
+            if not is_safe:
+                logging.warning(f"⛔ [{symbol}] تم إلغاء الصفقة بواسطة Gemini News Filter: {news_reason}")
+                send_telegram(
+                    f"⚠️ *تنبيه حماية Gemini — إلغاء صفقة {symbol}*\n\n"
+                    f"🔍 *سبب الإلغاء:* {news_reason}\n"
+                    f"تم تمشيط الأخبار وإلغاء الدخول كإجراء وقائي لحماية المحفظة رغم التقاطع الفني."
+                )
+                return
+
+            atr       = closed_candle['atr']
+            stop_dist = atr * cfg['atr_mult']
+            risk_amt  = state['balance'] * cfg['risk_pct']
+            units     = min(risk_amt / stop_dist, state['balance'] / entry_price)
+
+            sl_price  = entry_price - stop_dist
+            tp_price  = entry_price + (stop_dist * cfg['rr_ratio'])
+
             state['position'] = {
                 'entry_time':  str(datetime.now(timezone.utc)),
                 'entry_price': entry_price,
-                'sl':  entry_price - stop_dist,
-                'tp':  entry_price + stop_dist * cfg['rr_ratio'],
+                'sl':  sl_price,
+                'tp':  tp_price,
                 'units': units,
             }
             save_state(state, symbol)
+
+            # 📝 الخيار 2: تقرير تحليلي ذكي باللغة العربية من Gemini
+            memo = generate_gemini_trade_memo(symbol, entry_price, sl_price, tp_price, risk_amt)
+            memo_block = f"\n\n🤖 *تحليل Gemini الذكي:*\n_{memo}_" if memo else ""
+
             send_telegram(
                 f'🚀 *دخول صفقة جديدة — {symbol}*\n\n'
                 f'💵 *سعر الدخول:* `${entry_price:,.2f}`\n'
-                f'🔴 *وقف الخسارة:* `${entry_price - stop_dist:,.2f}`\n'
-                f'🟢 *جني الأرباح:*  `${entry_price + stop_dist * cfg["rr_ratio"]:,.2f}`\n'
+                f'🔴 *وقف الخسارة:* `${sl_price:,.2f}`\n'
+                f'🟢 *جني الأرباح:*  `${tp_price:,.2f}`\n'
                 f'📊 *الكمية:* `{units:.5f}` | ⚠️ *المخاطرة:* `${risk_amt:.2f}`'
+                f'{memo_block}'
             )
             logging.info(f'🚀 [{symbol}] فتح صفقة @ ${entry_price:,.2f}')
 
