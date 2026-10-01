@@ -43,6 +43,8 @@ def build_trade_record(
     wait_reason: str = "",
     entry_price: float = 0.0,
     hypothetical_entry: float = 0.0,
+    stop_loss_price: float = 0.0,
+    take_profit_price: float = 0.0,
     is_candle_close_event: bool = False,
     ablation_flags: dict = None
 ) -> dict:
@@ -59,6 +61,7 @@ def build_trade_record(
         "trade_id": trade_id,
         "timestamp": datetime.now(timezone.utc).isoformat(),
         "symbol": symbol,
+        "timeframe": "4h",
         "is_candle_close_event": is_candle_close_event,
         "legacy_decision": legacy_decision,
         "qds_decision": qds_decision,
@@ -98,6 +101,8 @@ def build_trade_record(
         # 7. Trade Execution & Price Tracking
         "entry_price": entry_price,
         "hypothetical_entry": hypothetical_entry,
+        "stop_loss_price": stop_loss_price,
+        "take_profit_price": take_profit_price,
         "exit_price": 0.0,
         "hypothetical_exit": 0.0,
         "status": "OPEN" if (legacy_decision == "BUY" or qds_decision == "BUY") else "CLOSED",
@@ -108,11 +113,68 @@ def build_trade_record(
         
         # 8. Excursion Analytics (MFE & MAE)
         "mfe_pct": 0.0,  # Maximum Favorable Excursion
-        "mae_pct": 0.0   # Maximum Adverse Excursion
+        "mae_pct": 0.0,   # Maximum Adverse Excursion
+
+        # 9. Post-Decision Forward Horizons (4h, 12h, 24h, 48h)
+        "forward_horizons": {
+            "4h": None,
+            "12h": None,
+            "24h": None,
+            "48h": None
+        }
     }
 
 def record_decision_event(record: dict):
-    """إضافة سجل صفقة جديد إلى الذاكرة."""
+    """إضافة سجل صفقة جديد إلى الذاكرة وإبقاؤه في التزامن."""
     memory = load_trade_memory()
     memory.append(record)
     save_trade_memory(memory)
+
+def update_open_records_excursions(symbol: str, current_price: float):
+    """تحديث رحلة السعر المستقلة (MFE/MAE والآفاق الزمنية 4h/12h/24h/48h) لجميع القرارات المسجلة."""
+    memory = load_trade_memory()
+    updated = False
+    now = datetime.now(timezone.utc)
+
+    for rec in memory:
+        if rec.get("symbol") != symbol:
+            continue
+        
+        entry = rec.get("entry_price") or rec.get("hypothetical_entry") or 0.0
+        if entry <= 0.0:
+            continue
+
+        rec_time_str = rec.get("timestamp", "")
+        try:
+            rec_time = datetime.fromisoformat(rec_time_str)
+            elapsed_hours = (now - rec_time).total_seconds() / 3600.0
+        except Exception:
+            elapsed_hours = 0.0
+
+        pnl_pct = ((current_price - entry) / entry) * 100.0
+
+        # تحديث MFE & MAE
+        if pnl_pct > rec.get("mfe_pct", 0.0):
+            rec["mfe_pct"] = round(pnl_pct, 2)
+            updated = True
+        if pnl_pct < rec.get("mae_pct", 0.0):
+            rec["mae_pct"] = round(pnl_pct, 2)
+            updated = True
+
+        # تحديث Forward Horizons
+        horizons = rec.setdefault("forward_horizons", {"4h": None, "12h": None, "24h": None, "48h": None})
+        if elapsed_hours >= 4.0 and horizons.get("4h") is None:
+            horizons["4h"] = round(pnl_pct, 2)
+            updated = True
+        if elapsed_hours >= 12.0 and horizons.get("12h") is None:
+            horizons["12h"] = round(pnl_pct, 2)
+            updated = True
+        if elapsed_hours >= 24.0 and horizons.get("24h") is None:
+            horizons["24h"] = round(pnl_pct, 2)
+            updated = True
+        if elapsed_hours >= 48.0 and horizons.get("48h") is None:
+            horizons["48h"] = round(pnl_pct, 2)
+            updated = True
+
+    if updated:
+        save_trade_memory(memory)

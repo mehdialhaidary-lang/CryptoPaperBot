@@ -113,7 +113,7 @@ def evaluate_shadow_qds_cycle(symbol: str, df_4h: pd.DataFrame, df_1d: pd.DataFr
         wait_reason_str = " · ".join(wait_reasons)
         decision_reason = f"QDS WAIT: {wait_reason_str} (Regime: {regime_info['regime']})"
 
-    # 7. التسجيل في ذاكرة الصفقات (Trade Memory)
+    # 7. التسجيل في ذاكرة الصفقات (Trade Memory) وتحديث الرحلات الزمنية (Forward Excursions)
     c_time = int(closed_candle['timestamp'])
     shadow_st = load_shadow_state()
     last_processed = shadow_st.get("last_processed_candles", {}).get(symbol, 0)
@@ -130,6 +130,9 @@ def evaluate_shadow_qds_cycle(symbol: str, df_4h: pd.DataFrame, df_1d: pd.DataFr
         "news_ai_passed": gemini_data.get("safe", True)
     }
 
+    tp_price = current_price + (stop_dist * 2.5) if (legacy_decision == "BUY" or qds_decision == "BUY") else 0.0
+    sl_price = stop_price if (legacy_decision == "BUY" or qds_decision == "BUY") else 0.0
+
     trade_id = f"shadow_{symbol.replace('/','_')}_{c_time}"
     rec = trade_memory.build_trade_record(
         trade_id=trade_id,
@@ -145,10 +148,15 @@ def evaluate_shadow_qds_cycle(symbol: str, df_4h: pd.DataFrame, df_1d: pd.DataFr
         wait_reason=wait_reason_str,
         entry_price=current_price if legacy_decision == "BUY" else 0.0,
         hypothetical_entry=current_price if qds_decision == "BUY" else 0.0,
+        stop_loss_price=sl_price,
+        take_profit_price=tp_price,
         is_candle_close_event=is_candle_close_event,
         ablation_flags=ablation_flags
     )
     trade_memory.record_decision_event(rec)
+
+    # تحديث الآفاق الزمنية و MFE / MAE لكل الأسلحة السابقة المسجلة لهذا الزوج
+    trade_memory.update_open_records_excursions(symbol, current_price)
 
     logging.info(f"👤 [Shadow QDS] {symbol} | Legacy: {legacy_decision} | QDS: {qds_decision} | {decision_reason}")
 
