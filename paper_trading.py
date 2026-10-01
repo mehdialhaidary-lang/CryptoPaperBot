@@ -1,4 +1,4 @@
-﻿import os
+import os
 import sys
 import json
 import time
@@ -300,13 +300,31 @@ def monitor_live_position(exchange, state: dict, symbol: str = 'BTC/USDT'):
     current_price = ticker['last']
     entry_price   = pos['entry_price']
     sl, tp, units = pos['sl'], pos['tp'], pos['units']
+
+    # ↗️ خوارزمية وقف الخسارة المتحرك (ATR Trailing Stop Loss)
+    highest_price = pos.get('highest_price', entry_price)
+    if current_price > highest_price:
+        pos['highest_price'] = current_price
+        atr_dist = pos.get('atr_dist', (tp - entry_price) / cfg['rr_ratio'])
+        new_sl   = current_price - atr_dist
+        if new_sl > sl:
+            old_sl    = sl
+            pos['sl'] = new_sl
+            sl        = new_sl
+            save_state(state, symbol)
+            logging.info(f"↗️ [{symbol}] رفع وقف الخسارة المتحرك: ${old_sl:,.2f} -> ${new_sl:,.2f} (قمة جديدة: ${current_price:,.2f})")
+
     exit_price, exit_reason = None, None
     if current_price <= sl:
         exit_price  = sl
-        exit_reason = 'STOP LOSS 🔴 (Live Hit)'
+        if sl > entry_price:
+            exit_reason = 'TRAILING STOP 🟢 (حجز الأرباح)'
+        else:
+            exit_reason = 'STOP LOSS 🔴 (Live Hit)'
     elif current_price >= tp:
         exit_price  = tp
         exit_reason = 'TAKE PROFIT 🟢 (Live Hit)'
+
     if exit_price is None:
         return
     effective_exit = exit_price * (1 - cfg['slippage_pct'] - cfg['spread_pct'])
@@ -410,10 +428,12 @@ def evaluate_signals_on_candle_close(exchange, state: dict, symbol: str = 'BTC/U
             tp_price  = entry_price + (stop_dist * cfg['rr_ratio'])
 
             state['position'] = {
-                'entry_time':  str(datetime.now(timezone.utc)),
-                'entry_price': entry_price,
-                'sl':  sl_price,
-                'tp':  tp_price,
+                'entry_time':    str(datetime.now(timezone.utc)),
+                'entry_price':   entry_price,
+                'highest_price': entry_price,
+                'atr_dist':      stop_dist,
+                'sl':    sl_price,
+                'tp':    tp_price,
                 'units': units,
             }
             save_state(state, symbol)
