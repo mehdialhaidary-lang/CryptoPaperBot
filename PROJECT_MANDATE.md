@@ -1,43 +1,41 @@
-# 🎯 CryptoPaperBot — Project Mandate & Quantitative Evaluation Framework
+# 🎯 PROJECT MANDATE & ECONOMIC EVALUATION FRAMEWORK
 
-> **الهدف الأسمى والوحيد للمشروع:**  
-> **تحقيق ربح صافٍ مستدام (Sustainable Net PnL) ذي ميزة كمية مثبتة (Quantifiable Edge)، وليس بناء نظام أكثر تعقيداً أو إضافة تقنيات زوائد.**
-
----
-
-## 📐 1. خوارزمية التقييم الاقتصادي الصارمة (KPI Evaluation Criteria)
-
-أي مكون برمجي، استراتيجية، أو وحدة تحليل جديدة لن تُعتمد إلا إذا أثبتت بالبيانات الفعلية قدرتها على تحسين المعايير المالية التالية:
-
-1. **Net PnL (الربح الصافي النهائي):** زيادة مجموع الأرباح بعد احتساب الرسوم والانزلاق.
-2. **Expectancy (العائد المتوقع لكل صفقة):**
-   $$E = (\text{Win Rate} \times \text{Average Win}) - (\text{Loss Rate} \times \text{Average Loss})$$
-3. **Profit Factor (معامل الربحية):**
-   $$\text{Profit Factor} = \frac{\text{Gross Profit}}{\text{Gross Loss}} > 1.5$$
-4. **Max Drawdown Reduction:** تقليل أقصى تراجع بدون التضحية بنسبة أكبر من الأرباح.
-5. **Out-of-Sample Robustness:** الحفاظ على الأداء المربح عبر حالات السوق المختلفة (`TRENDING_UP`, `TRENDING_DOWN`, `SIDEWAYS`, `HIGH_VOLATILITY`).
+> **Core Philosophy**: The ultimate objective of this system is **Sustainable Net Profitability (الربح الصافي المستدام)** with a mathematically proven quantitative edge. We do not build complexity for the sake of complexity, nor do we retain "smart" features that do not generate measurable economic value.
 
 ---
 
-## ✂️ 2. معيار الاقتطاع الصارم (Ablation Rule)
+## 📐 1. Economic Evaluation Metrics (معايير التقييم الاقتصادي)
 
-* **لا قيمة منطقية أو تقنية لأي مكوّن لم يُثبت ربحيته بالبيانات.**
-* إذا أظهرت نتائج المراقبة والـ Ablation Testing أن مكوّناً معيناً (مثل فلاتر الذكاء الاصطناعي، أو محرك النظام، أو فلاتر المخاطرة) يقلل الأرباح الصافية أو يُفوت صفقات ذات Expectancy إيجابي، **يتم استبعاده وحذفه فوراً** مهما كان متقدماً تقنياً.
+Every component, filter, regime classifier, or risk rule in the Quantitative Decision System (QDS) must be validated against the following strict economic metrics:
+
+1. **Net PnL ($\text{Net PnL}$)**: Total net profit in USD after deducting all commissions, slippage, and spread costs.
+2. **Expectancy ($\text{Expectancy}$)**:
+   $$\text{Expectancy} = (\text{Win Rate} \times \text{Average Win USD}) - (\text{Loss Rate} \times \text{Average Loss USD})$$
+3. **Profit Factor ($\text{Profit Factor}$)**:
+   $$\text{Profit Factor} = \frac{\sum \text{Gross Profits}}{\sum \text{Gross Losses}} \quad (\text{Target} > 1.50)$$
+4. **Max Drawdown ($\text{Max DD}$)**: Mitigation of maximum peak-to-trough decline without disproportionately sacrificing total net profit.
+5. **Out-of-Sample (OOS) Robustness**: Performance stability across unseen data and varying market conditions.
 
 ---
 
-## 🔄 3. دورة التطوير المعتمدة (Development Lifecycle)
+## 🔄 2. Strict Project Pipeline (مسار التطوير المعتمد)
 
 $$\text{Build} \longrightarrow \text{Observe} \longrightarrow \text{Measure} \longrightarrow \text{Validate} \longrightarrow \text{Optimize for Profit}$$
 
-* 🚫 **ممنوع:** $\text{Build} \rightarrow \text{Add Features} \rightarrow \text{Add Features} \rightarrow \text{Add Features}$
-* ✅ **المعتمد:** الصبر التام على جمع بيانات المراقبة والقياس عبر وضع الظل (`Shadow Mode`) بدون أي تعديل مبكر في المعايير أو الاستراتيجية.
+* **STRICT RULE**: NO premature parameter optimization, NO adding features in loops, and NO threshold tuning until sufficient statistical sample sizes are gathered across diverse market regimes.
 
 ---
 
-## 📊 4. التتبع المستقبلي وتصنيف الأداء (Performance Segmentation)
+## ✂️ 3. Component Elimination & Ablation Protocol (معيار حذف المكونات)
 
-يتم الاحتفاظ بجميع بيانات `trade_memory.json` لتحليل الأداء حسب:
-1. **Market Regime:** معرفة أي ظروف سوق تحقق أعلى Expectancy.
-2. **Asset:** تحديد أفضل الأصول استجابةً للشبكة.
-3. **Signal Type & Timeframe:** تقييم جودة الإشارات المطبقة على شمعة الـ 4H.
+* No module or feature is retained solely because it sounds logical, advanced, or sophisticated.
+* If **Ablation Testing** (`Legacy`, `Legacy + Regime`, `Legacy + Risk`, `Legacy + Gemini`, `Full QDS`) demonstrates that a module does NOT increase Net PnL, Expectancy, or Profit Factor, or if it needlessly restricts profitable trades:
+  👉 **It MUST be pruned or disabled.**
+
+---
+
+## 📊 4. Operational & Observability Guidelines (إرشادات التشغيل والتتبع)
+
+1. **Legacy Engine**: Runs 100% untouched as the baseline benchmark ($1000 initial balance per symbol across 5 pairs).
+2. **Shadow QDS Engine**: Operates in sidecar mode, evaluating decisions without altering paper trading state or balances.
+3. **Trade Memory & Horizon Tracking**: Record complete context (Market Regime, Technical Score, Risk, Gemini Status) along with post-decision forward price horizons (4h, 12h, 24h, 48h) and excursion analytics (MFE, MAE) for all decisions (`BUY` and `WAIT`).
