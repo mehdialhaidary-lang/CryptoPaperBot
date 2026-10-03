@@ -4,13 +4,13 @@
     "position": {
         "entry_time": "2026-10-01 23:21:56.805068+00:00",
         "entry_price": 770.989315,
-        "highest_price": 778.25,
+        "highest_price": 788.0,
         "atr_dist": 17.69620881598974,
-        "sl": 760.5537911840103,
+        "sl": 770.3037911840103,
         "tp": 815.2298370399744,
         "units": 1.1301855786154957
     },
-    "last_processed_candle_time": 1791014400000,
+    "last_processed_candle_time": 1791028800000,
     "trades": [],
-    "last_heartbeat_time": 1791021871.7181196
+    "last_heartbeat_time": 1791051582.2586863
 }
