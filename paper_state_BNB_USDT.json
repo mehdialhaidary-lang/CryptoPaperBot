@@ -1,16 +1,22 @@
 {
-    "balance": 1000.0,
+    "balance": 1015.4175702901673,
     "initial_balance": 1000.0,
-    "position": {
-        "entry_time": "2026-10-01 23:21:56.805068+00:00",
-        "entry_price": 770.989315,
-        "highest_price": 788.0,
-        "atr_dist": 17.69620881598974,
-        "sl": 770.3037911840103,
-        "tp": 815.2298370399744,
-        "units": 1.1301855786154957
-    },
-    "last_processed_candle_time": 1791043200000,
-    "trades": [],
+    "position": null,
+    "last_processed_candle_time": 1791057600000,
+    "trades": [
+        {
+            "entry_time": "2026-10-01 23:21:56.805068+00:00",
+            "exit_time": "2026-10-04 00:04:46.792432+00:00",
+            "entry_price": 770.989315,
+            "exit_price": 786.728904,
+            "gross_pnl_usd": 18.4115,
+            "fees_usd": 1.7611,
+            "slippage_usd": 1.2328,
+            "pnl": 15.4176,
+            "reason": "TIME EXIT ⏳ (استغرق 49h دون زخم)",
+            "exit_reason": "TIME_EXIT",
+            "balance_after": 1015.4175702901673
+        }
+    ],
     "last_heartbeat_time": 1791051582.2586863
 }
