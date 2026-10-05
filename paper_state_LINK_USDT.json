@@ -1,8 +1,16 @@
 {
     "balance": 1000.0,
     "initial_balance": 1000.0,
-    "position": null,
-    "last_processed_candle_time": 1791144000000,
+    "position": {
+        "entry_time": "2026-10-05 08:40:16.860269+00:00",
+        "entry_price": 14.186923899999998,
+        "highest_price": 14.186923899999998,
+        "atr_dist": 0.5332049807762775,
+        "sl": 13.65371891922372,
+        "tp": 15.519936351940693,
+        "units": 37.509026961606
+    },
+    "last_processed_candle_time": 1791172800000,
     "trades": [],
-    "last_heartbeat_time": 1791143837.3615487
+    "last_heartbeat_time": 1791189620.7219527
 }
