@@ -2,7 +2,7 @@
     "balance": 1000.943827259163,
     "initial_balance": 1000.0,
     "position": null,
-    "last_processed_candle_time": 1791216000000,
+    "last_processed_candle_time": 1791230400000,
     "trades": [
         {
             "entry_time": "2026-09-11 17:17:20.389328+00:00",
@@ -45,5 +45,5 @@
             "balance_after": 1000.943827259163
         }
     ],
-    "last_heartbeat_time": 1791221161.1358194
+    "last_heartbeat_time": 1791256465.100762
 }
