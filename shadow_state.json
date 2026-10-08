@@ -4,10 +4,10 @@
     "initial_balance": 5000.0,
     "trades": [],
     "last_processed_candles": {
-        "BTC/USDT": 1791417600000,
-        "ETH/USDT": 1791417600000,
-        "SOL/USDT": 1791417600000,
-        "LINK/USDT": 1791417600000,
-        "BNB/USDT": 1791417600000
+        "BTC/USDT": 1791446400000,
+        "ETH/USDT": 1791446400000,
+        "SOL/USDT": 1791446400000,
+        "LINK/USDT": 1791446400000,
+        "BNB/USDT": 1791446400000
     }
 }
