@@ -39,3 +39,18 @@ $$\text{Build} \longrightarrow \text{Observe} \longrightarrow \text{Measure} \lo
 1. **Legacy Engine**: Runs 100% untouched as the baseline benchmark ($1000 initial balance per symbol across 5 pairs).
 2. **Shadow QDS Engine**: Operates in sidecar mode, evaluating decisions without altering paper trading state or balances.
 3. **Trade Memory & Horizon Tracking**: Record complete context (Market Regime, Technical Score, Risk, Gemini Status) along with post-decision forward price horizons (4h, 12h, 24h, 48h) and excursion analytics (MFE, MAE) for all decisions (`BUY` and `WAIT`).
+
+---
+
+## 🚀 5. Future Architecture & Production Milestone: Freqtrade (محطة التوسع المستقبلي)
+
+* **Reference**: [Freqtrade GitHub Repository](https://github.com/freqtrade/freqtrade) — المنظومة المفتوحة المصدر القياسية لإدارة وتنفيذ التداول الكمي للعملات الرقمية.
+* **Reminder & Migration Trigger Criteria (متى يتم التذكير به والانتقال إليه؟)**:
+  1. اكتمال مرحلة القياس والمراقبة الحالية (`Observe & Measure`) وتراكم عينة إحصائية وافية.
+  2. إثبات ميزة كمية رابحة ومستدامة ($\text{Expectancy} > 0$ و $\text{Profit Factor} > 1.50$) عبر مختلف حالات السوق (Market Regimes).
+  3. اتخاذ القرار بالانتقال من التداول الورقي (Paper Trading عبر GitHub Actions) إلى **التداول الحي الحقيقي (Live Trading برأس مال فعلي على سيرفر VPS دائم)**.
+* **Architectural Borrowing (مفاهيم يُستفاد منها في نظامنا)**:
+  * **Circuit Breakers / Protections**: قواطع حماية المحفظة وفترات التهدئة (Cooldown) بعد الخسائر المتتالية.
+  * **Dynamic Pairlist Filtering**: فلترة الأزواج بناءً على السيولة والتذبذب والـ Spread.
+  * **FreqAI Concept**: تفضيل تعلم الآلة الموجه للسلاسل الزمنية الإحصائية على النماذج اللغوية العامة عند اتخاذ القرارات السريعة.
+
