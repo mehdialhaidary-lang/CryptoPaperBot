@@ -1,4 +1,4 @@
-﻿"""
+"""
 ======================================================================
  📊 MARKET REGIME ENGINE — محرك حالة السوق (Configurable Parameterized)
 ======================================================================
@@ -26,8 +26,8 @@ DEFAULT_REGIME_CONFIG = {
     "bb_width_squeeze": 0.03
 }
 
-def calculate_adx(df: pd.DataFrame, period: int = 14) -> pd.Series:
-    """حساب مؤشر ADX لتحديد قوة الاتجاه."""
+def calculate_dmi(df: pd.DataFrame, period: int = 14) -> tuple:
+    """حساب مؤشرات ADX, +DI, -DI لتحديد قوة واتجاه السوق كمياً."""
     df_c = df.copy()
     df_c['up'] = df_c['high'] - df_c['high'].shift(1)
     df_c['down'] = df_c['low'].shift(1) - df_c['low']
@@ -46,7 +46,11 @@ def calculate_adx(df: pd.DataFrame, period: int = 14) -> pd.Series:
     
     dx = 100 * ((plus_di - minus_di).abs() / (plus_di + minus_di).replace(0, np.nan))
     adx = dx.ewm(alpha=1/period, adjust=False).mean()
-    return adx.fillna(0.0)
+    return adx.fillna(0.0), plus_di.fillna(0.0), minus_di.fillna(0.0)
+
+def calculate_adx(df: pd.DataFrame, period: int = 14) -> pd.Series:
+    """حساب مؤشر ADX لتحديد قوة الاتجاه (متوافق خلفياً)."""
+    return calculate_dmi(df, period)[0]
 
 def detect_market_regime(df_4h: pd.DataFrame, df_1d: pd.DataFrame = None, config: dict = None) -> dict:
     """
@@ -66,9 +70,11 @@ def detect_market_regime(df_4h: pd.DataFrame, df_1d: pd.DataFrame = None, config
 
     c = df_4h.iloc[-2]  # الشمعة المغلقة الأخيرة
     
-    # 1. ADX
-    adx_series = calculate_adx(df_4h, period=cfg.get("adx_period", 14))
+    # 1. ADX and DMI (+DI / -DI)
+    adx_series, plus_di_series, minus_di_series = calculate_dmi(df_4h, period=cfg.get("adx_period", 14))
     current_adx = float(adx_series.iloc[-2])
+    current_plus_di = float(plus_di_series.iloc[-2])
+    current_minus_di = float(minus_di_series.iloc[-2])
     
     # 2. ATR Ratio (مقارنة الـ ATR الحالي بمتوسط الـ ATR لـ 20 شمعة)
     atr_curr = float(c.get('atr', 0.0))
@@ -86,10 +92,10 @@ def detect_market_regime(df_4h: pd.DataFrame, df_1d: pd.DataFrame = None, config
     # 4. تصنيف حالة السوق
     regime = "SIDEWAYS"
     if current_adx >= cfg.get("adx_trending_threshold", 22.0):
-        if c.get('ema_fast', 0) > c.get('ema_slow', 0):
-            regime = "TRENDING_UP"
+        if 'ema_fast' in c and 'ema_slow' in c and pd.notna(c.get('ema_fast')) and pd.notna(c.get('ema_slow')):
+            regime = "TRENDING_UP" if c['ema_fast'] > c['ema_slow'] else "TRENDING_DOWN"
         else:
-            regime = "TRENDING_DOWN"
+            regime = "TRENDING_UP" if current_plus_di >= current_minus_di else "TRENDING_DOWN"
     elif current_adx <= cfg.get("adx_sideways_threshold", 18.0) or bb_width <= cfg.get("bb_width_squeeze", 0.03):
         regime = "SIDEWAYS"
     elif atr_ratio >= cfg.get("atr_ratio_high_vol", 1.4):
@@ -100,8 +106,125 @@ def detect_market_regime(df_4h: pd.DataFrame, df_1d: pd.DataFrame = None, config
     return {
         "regime": regime,
         "adx": round(current_adx, 2),
+        "plus_di": round(current_plus_di, 2),
+        "minus_di": round(current_minus_di, 2),
         "atr_ratio": round(atr_ratio, 2),
         "bb_width": round(bb_width, 4),
         "is_trending": "TRENDING" in regime,
-        "details": f"ADX: {current_adx:.1f} | ATR Ratio: {atr_ratio:.2f} | BB Width: {bb_width:.3f}"
+        "details": f"ADX: {current_adx:.1f} (+DI: {current_plus_di:.1f} | -DI: {current_minus_di:.1f}) | ATR Ratio: {atr_ratio:.2f} | BB Width: {bb_width:.3f}"
+    }
+
+def calculate_qds_composite_score(regime_info: dict, technical_indicators: dict, risk_eval: dict) -> dict:
+    """
+    حساب الدرجة المركبة لإشارة QDS (0 إلى 100) وفلاتر حماية المحفظة المعتمدة من مجلس الذكاء الاصطناعي:
+    - Market Regime & Trend Strength (ADX, +DI, -DI): 30 points
+    - Technical Momentum (EMA cross, Daily Trend, RSI): 25 points
+    - Volatility & Squeeze Health (ATR Ratio, BB Width): 25 points
+    - Portfolio Risk Allowance (Risk Manager): 20 points
+    """
+    scores = {
+        "regime_score": 0.0,
+        "momentum_score": 0.0,
+        "volatility_score": 0.0,
+        "risk_score": 0.0
+    }
+
+    if isinstance(regime_info, str):
+        regime_info = {"regime": regime_info}
+    elif not isinstance(regime_info, dict):
+        regime_info = {}
+
+    if not isinstance(technical_indicators, dict):
+        technical_indicators = {}
+
+    if not isinstance(risk_eval, dict):
+        risk_eval = {}
+
+    regime = regime_info.get("regime", "UNKNOWN")
+    adx = float(regime_info.get("adx", 0.0))
+    plus_di = float(regime_info.get("plus_di", 0.0))
+    minus_di = float(regime_info.get("minus_di", 0.0))
+    
+    # التعامل مع السجلات التاريخية أو الحقول غير المتوفرة بقيم محايدة
+    bb_val = regime_info.get("bb_width")
+    bb_width = float(bb_val) if bb_val is not None else 0.04
+    
+    atr_val = regime_info.get("atr_ratio")
+    atr_ratio = float(atr_val) if atr_val is not None else 1.0
+
+    # 1. Regime & Trend Strength (30 pts)
+    if regime == "TRENDING_UP" and (plus_di >= minus_di or adx >= 20.0):
+        scores["regime_score"] = 30.0
+    elif adx >= 22.0 and plus_di > minus_di and regime != "TRENDING_DOWN":
+        scores["regime_score"] = 25.0
+    elif regime == "SIDEWAYS":
+        scores["regime_score"] = 5.0
+    else:  # TRENDING_DOWN or plus_di <= minus_di
+        scores["regime_score"] = 0.0
+
+    # 2. Technical Momentum (25 pts)
+    cross_up = technical_indicators.get("cross_up", False)
+    daily_up = technical_indicators.get("daily_up", False)
+    rsi_val = technical_indicators.get("rsi_val", 50.0)
+
+    mom_pts = 0.0
+    if cross_up: mom_pts += 10.0
+    if daily_up: mom_pts += 10.0
+    if 45.0 <= rsi_val <= 68.0:
+        mom_pts += 5.0
+    elif 40.0 <= rsi_val:
+        mom_pts += 2.5
+    scores["momentum_score"] = mom_pts
+
+    # 3. Volatility & Squeeze Health (25 pts)
+    vol_pts = 0.0
+    # Squeeze check: avoid squeeze < 0.03
+    if bb_width >= 0.03:
+        vol_pts += 15.0
+    else:
+        vol_pts += 0.0  # Squeeze penalty!
+
+    # ATR Ratio check: healthy between 0.8 and 1.4
+    if 0.8 <= atr_ratio <= 1.4:
+        vol_pts += 10.0
+    elif atr_ratio <= 1.6:
+        vol_pts += 5.0
+    else: # atr_ratio > 1.6 (exhaustion)
+        vol_pts += 0.0
+    scores["volatility_score"] = vol_pts
+
+    # 4. Risk Allowance (20 pts)
+    if risk_eval.get("allowed", False):
+        scores["risk_score"] = 20.0
+    else:
+        scores["risk_score"] = 0.0
+
+    total_score = sum(scores.values())
+
+    # Filter Decisions
+    regime_passed = (scores["regime_score"] >= 25.0) and (regime != "TRENDING_DOWN") and (plus_di >= minus_di or adx >= 22.0)
+    volatility_passed = (bb_width >= 0.03) and (atr_ratio <= 1.6)
+    score_passed = total_score >= 80.0
+
+    is_qds_buy = regime_passed and volatility_passed and score_passed and (cross_up or technical_indicators.get("is_holding", False))
+
+    reasons = []
+    if not regime_passed:
+        reasons.append(f"فلتر الاتجاه: السوق {regime} (ADX: {adx:.1f}, +DI: {plus_di:.1f} vs -DI: {minus_di:.1f})")
+    if not volatility_passed:
+        if bb_width < 0.03:
+            reasons.append(f"فلتر الانضغاط: BB Width ({bb_width:.4f}) في نطاق خانق")
+        if atr_ratio > 1.6:
+            reasons.append(f"فلتر التقلب: ATR Ratio ({atr_ratio:.2f}) إجهاد مفرط")
+    if total_score < 80.0:
+        reasons.append(f"الدرجة المركبة ({total_score:.1f}/100) أقل من 80")
+
+    return {
+        "total_score": round(total_score, 1),
+        "score_breakdown": scores,
+        "regime_passed": regime_passed,
+        "volatility_passed": volatility_passed,
+        "score_passed": score_passed,
+        "is_qds_buy": is_qds_buy,
+        "filter_rejection_reasons": reasons
     }

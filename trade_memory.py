@@ -145,10 +145,12 @@ def build_trade_record(
         "ablation_flags": ablation_flags or default_ablation,
 
         # 4. Market Regime Metadata
-        "market_regime": market_regime.get("regime", "UNKNOWN"),
-        "adx": market_regime.get("adx", 0.0),
-        "atr_ratio": market_regime.get("atr_ratio", 1.0),
-        "bb_width": market_regime.get("bb_width", 0.0),
+        "market_regime": market_regime.get("regime", "UNKNOWN") if isinstance(market_regime, dict) else str(market_regime),
+        "adx": market_regime.get("adx", 0.0) if isinstance(market_regime, dict) else 0.0,
+        "plus_di": market_regime.get("plus_di", 0.0) if isinstance(market_regime, dict) else 0.0,
+        "minus_di": market_regime.get("minus_di", 0.0) if isinstance(market_regime, dict) else 0.0,
+        "atr_ratio": market_regime.get("atr_ratio", 1.0) if isinstance(market_regime, dict) else 1.0,
+        "bb_width": market_regime.get("bb_width", 0.0) if isinstance(market_regime, dict) else 0.0,
         
         # 3. Scores & AI Metadata
         "technical_score": round(technical_score, 2),

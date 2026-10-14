@@ -19,6 +19,7 @@ import gemini_validator
 import trade_memory
 
 SHADOW_STATE_FILE = "shadow_state.json"
+USE_QDS_FILTERS = os.getenv("USE_QDS_FILTERS", "true").lower() in ("true", "1", "yes")
 
 def load_shadow_state() -> dict:
     if os.path.exists(SHADOW_STATE_FILE):
@@ -120,29 +121,57 @@ def evaluate_shadow_qds_cycle(
         all_symbol_states=symbol_states
     )
 
-    # 6. QDS Decision Logic
+    # 6. QDS Decision Logic & Composite Scoring (Phase 2 Upgrade)
+    tech_indicators = {
+        "cross_up": cross_up,
+        "daily_up": daily_up,
+        "rsi_val": rsi_val,
+        "rsi_ok": rsi_ok,
+        "is_holding": legacy_action == "HOLD"
+    }
+    qds_matrix_result = market_regime.calculate_qds_composite_score(
+        regime_info=regime_info,
+        technical_indicators=tech_indicators,
+        risk_eval=risk_eval
+    )
+
     qds_decision = "WAIT"
     wait_reasons = []
-    
+
+    legacy_tech_passed = bool(cross_up and daily_up and rsi_ok)
+
     if not cross_up:
         wait_reasons.append("لا يوجد تقاطع EMA صاعد طازج")
     if not daily_up:
         wait_reasons.append("الاتجاه اليومي هابط")
     if not rsi_ok:
         wait_reasons.append(f"RSI ({rsi_val:.1f}) أقل من 40")
-    if not risk_eval["allowed"]:
-        wait_reasons.append(f"مخاطرة المحفظة: {risk_eval['reason']}")
-    if not gemini_data["safe"]:
-        wait_reasons.append(f"حماية Gemini: {gemini_data['reason']}")
+    if not risk_eval.get("allowed", False):
+        wait_reasons.append(f"مخاطرة المحفظة: {risk_eval.get('reason', 'غير مسموح')}")
+    if not gemini_data.get("safe", True):
+        wait_reasons.append(f"حماية Gemini: {gemini_data.get('reason', 'مخاطر أخبار')}")
 
-    if cross_up and daily_up and rsi_ok and risk_eval["allowed"] and gemini_data["safe"]:
-        qds_decision = "BUY"
-        decision_reason = f"QDS BUY: جميع الشروط مكتملة (Regime: {regime_info['regime']} | Score: {tech_score:.0f})"
-        wait_reason_str = ""
+    if USE_QDS_FILTERS:
+        if qds_matrix_result["is_qds_buy"] and gemini_data.get("safe", True):
+            qds_decision = "BUY"
+            decision_reason = f"QDS BUY: إشارة معتمدة فائقة النقاء (Score: {qds_matrix_result['total_score']:.1f}/100 | Regime: {regime_info['regime']})"
+            wait_reason_str = ""
+        else:
+            qds_decision = "WAIT"
+            if legacy_tech_passed and risk_eval.get("allowed", False) and not qds_matrix_result["is_qds_buy"]:
+                rejections = qds_matrix_result.get("filter_rejection_reasons", [])
+                wait_reasons.extend(rejections)
+            wait_reason_str = " · ".join(wait_reasons)
+            decision_reason = f"QDS WAIT: {wait_reason_str} (Regime: {regime_info['regime']} | Score: {qds_matrix_result['total_score']:.1f})"
     else:
-        qds_decision = "WAIT"
-        wait_reason_str = " · ".join(wait_reasons)
-        decision_reason = f"QDS WAIT: {wait_reason_str} (Regime: {regime_info['regime']})"
+        if legacy_tech_passed and risk_eval.get("allowed", False) and gemini_data.get("safe", True):
+            qds_decision = "BUY"
+            decision_reason = f"QDS BUY [Legacy Mode]: شروط التقاطع الفني مكتملة (Regime: {regime_info['regime']} | Score: {tech_score:.0f})"
+            wait_reason_str = ""
+        else:
+            qds_decision = "WAIT"
+            wait_reason_str = " · ".join(wait_reasons)
+            decision_reason = f"QDS WAIT [Legacy Mode]: {wait_reason_str} (Regime: {regime_info['regime']})"
 
     # 7. التسجيل في ذاكرة الصفقات (Trade Memory) وتحديث الرحلات الزمنية (Forward Excursions)
     c_time = int(closed_candle['timestamp'])
@@ -155,10 +184,15 @@ def evaluate_shadow_qds_cycle(
 
     ablation_flags = {
         "legacy_passed": legacy_decision == "BUY",
-        "tech_passed": cross_up and daily_up and rsi_ok,
+        "tech_passed": legacy_tech_passed,
         "regime_passed": regime_info.get("is_trending", False),
         "portfolio_risk_passed": risk_eval.get("allowed", True),
-        "news_ai_passed": gemini_data.get("safe", True)
+        "news_ai_passed": gemini_data.get("safe", True),
+        "qds_composite_score": qds_matrix_result.get("total_score", 0.0),
+        "qds_regime_passed": qds_matrix_result.get("regime_passed", False),
+        "qds_volatility_passed": qds_matrix_result.get("volatility_passed", False),
+        "qds_score_passed": qds_matrix_result.get("score_passed", False),
+        "qds_filters_enabled": USE_QDS_FILTERS
     }
 
     tp_price = current_price + (stop_dist * 2.5) if (legacy_decision == "BUY" or qds_decision == "BUY") else 0.0
@@ -211,5 +245,7 @@ def evaluate_shadow_qds_cycle(
         "wait_reason": wait_reason_str,
         "regime": regime_info["regime"],
         "tech_score": tech_score,
+        "qds_score": qds_matrix_result.get("total_score", 0.0),
+        "qds_eval": qds_matrix_result,
         "risk_eval": risk_eval
     }
