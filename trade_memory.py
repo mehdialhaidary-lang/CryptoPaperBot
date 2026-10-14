@@ -152,7 +152,7 @@ def build_trade_record(
         "atr_ratio": market_regime.get("atr_ratio", 1.0) if isinstance(market_regime, dict) else 1.0,
         "bb_width": market_regime.get("bb_width", 0.0) if isinstance(market_regime, dict) else 0.0,
         
-        # 3. Scores & AI Metadata
+        # 3. Scores & AI Metadata (Phase 4 Sentinel Enriched)
         "technical_score": round(technical_score, 2),
         "news_score": gemini_data.get("sentiment_score", 0.0),
         "news_impact": gemini_data.get("impact", "LOW"),
@@ -160,6 +160,10 @@ def build_trade_record(
         "news_novelty": gemini_data.get("novelty", 0.5),
         "source_quality": gemini_data.get("source_quality", "STANDARD"),
         "gemini_status": gemini_data.get("status", "NOT_CONFIGURED"),
+        "sentinel_verdict": gemini_data.get("verdict", "ALLOW"),
+        "sentinel_risk": gemini_data.get("risk_level", "LOW"),
+        "sentinel_category": gemini_data.get("black_swan_category", "NONE"),
+        "sentinel_provider": gemini_data.get("provider", "NONE"),
         
         # 4. Risk & Position Sizing Metadata
         "risk_at_stop_usd": risk_data.get("trade_risk_usd", 0.0),

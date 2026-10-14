@@ -96,18 +96,7 @@ def evaluate_shadow_qds_cycle(
     if daily_up: tech_score += 30.0
     if rsi_ok:   tech_score += 30.0
 
-    # 4. Gemini Analyst Validation (لو متوفر)
-    gemini_key = os.getenv("GEMINI_API_KEY", "")
-    gemini_data = {
-        "status": "NOT_CONFIGURED" if not gemini_key else "SKIPPED",
-        "sentiment_score": 0.0,
-        "impact": "LOW",
-        "confidence": 0.0,
-        "safe": True,
-        "reason": "لم يتم تفعيل الذكاء الاصطناعي"
-    }
-
-    # 5. Portfolio Risk Manager
+    # 4. Portfolio Risk Manager
     account_bal = symbol_states.get(symbol, {}).get('balance', 1000.0)
     atr_val = float(closed_candle.get('atr', current_price * 0.01))
     stop_dist = atr_val * 2.0
@@ -121,7 +110,7 @@ def evaluate_shadow_qds_cycle(
         all_symbol_states=symbol_states
     )
 
-    # 6. QDS Decision Logic & Composite Scoring (Phase 2 Upgrade)
+    # 5. QDS Decision Logic & Composite Scoring (Phase 2 Upgrade)
     tech_indicators = {
         "cross_up": cross_up,
         "daily_up": daily_up,
@@ -134,6 +123,25 @@ def evaluate_shadow_qds_cycle(
         technical_indicators=tech_indicators,
         risk_eval=risk_eval
     )
+
+    # 6. Gemini News Sentinel Gatekeeper (Phase 4 Council Mandate)
+    # لا يُستدعى الحارس إلا وفقط عند تحقق إشارة شراء مرشحة (Candidate BUY) بدرجة QDS >= 80
+    is_candidate_buy = bool(qds_matrix_result.get("is_qds_buy", False))
+    if is_candidate_buy:
+        gemini_data = gemini_validator.validate_candidate_entry(
+            symbol=symbol,
+            technical_meta=qds_matrix_result
+        )
+    else:
+        gemini_data = {
+            "status": "GATEKEEPER_IDLE",
+            "verdict": "ALLOW",
+            "risk_level": "LOW",
+            "confidence": 0.0,
+            "black_swan_category": "NONE",
+            "safe": True,
+            "reason": "لم تصدر إشارة شراء مرشحة (حارس الأخبار في وضع الاستعداد)"
+        }
 
     qds_decision = "WAIT"
     wait_reasons = []
@@ -148,17 +156,17 @@ def evaluate_shadow_qds_cycle(
         wait_reasons.append(f"RSI ({rsi_val:.1f}) أقل من 40")
     if not risk_eval.get("allowed", False):
         wait_reasons.append(f"مخاطرة المحفظة: {risk_eval.get('reason', 'غير مسموح')}")
-    if not gemini_data.get("safe", True):
-        wait_reasons.append(f"حماية Gemini: {gemini_data.get('reason', 'مخاطر أخبار')}")
 
     if USE_QDS_FILTERS:
         if qds_matrix_result["is_qds_buy"] and gemini_data.get("safe", True):
             qds_decision = "BUY"
-            decision_reason = f"QDS BUY: إشارة معتمدة فائقة النقاء (Score: {qds_matrix_result['total_score']:.1f}/100 | Regime: {regime_info['regime']})"
+            decision_reason = f"QDS BUY: إشارة معتمدة فائقة النقاء ومجازة من حارس الأخبار (Score: {qds_matrix_result['total_score']:.1f}/100 | Regime: {regime_info['regime']})"
             wait_reason_str = ""
         else:
             qds_decision = "WAIT"
-            if legacy_tech_passed and risk_eval.get("allowed", False) and not qds_matrix_result["is_qds_buy"]:
+            if qds_matrix_result.get("is_qds_buy", False) and not gemini_data.get("safe", True):
+                wait_reasons.append(f"حظر حارس الأخبار (VETO): {gemini_data.get('reason', 'مخاطر أحداث كارثية')} [Confidence: {gemini_data.get('confidence', 0)}%]")
+            elif legacy_tech_passed and risk_eval.get("allowed", False) and not qds_matrix_result["is_qds_buy"]:
                 rejections = qds_matrix_result.get("filter_rejection_reasons", [])
                 wait_reasons.extend(rejections)
             wait_reason_str = " · ".join(wait_reasons)
@@ -192,7 +200,13 @@ def evaluate_shadow_qds_cycle(
         "qds_regime_passed": qds_matrix_result.get("regime_passed", False),
         "qds_volatility_passed": qds_matrix_result.get("volatility_passed", False),
         "qds_score_passed": qds_matrix_result.get("score_passed", False),
-        "qds_filters_enabled": USE_QDS_FILTERS
+        "qds_filters_enabled": USE_QDS_FILTERS,
+        "sentinel_verdict": gemini_data.get("verdict", "ALLOW"),
+        "sentinel_confidence": gemini_data.get("confidence", 0.0),
+        "sentinel_risk": gemini_data.get("risk_level", "LOW"),
+        "sentinel_category": gemini_data.get("black_swan_category", "NONE"),
+        "sentinel_reason": gemini_data.get("reason", ""),
+        "sentinel_provider": gemini_data.get("provider", "NONE")
     }
 
     tp_price = current_price + (stop_dist * 2.5) if (legacy_decision == "BUY" or qds_decision == "BUY") else 0.0
