@@ -27,7 +27,15 @@ def load_shadow_state() -> dict:
                 return json.load(f)
         except Exception:
             pass
-    return {"hypothetical_positions": {}, "shadow_balance": 5000.0, "initial_balance": 5000.0, "trades": []}
+    return {
+        "hypothetical_positions": {},
+        "shadow_balance": 5000.0,
+        "initial_balance": 5000.0,
+        "trades": [],
+        "suspended_records": {},
+        "anomalies": [],
+        "untracked_historical_trades": []
+    }
 
 def save_shadow_state(state: dict):
     tmp = SHADOW_STATE_FILE + ".tmp"
@@ -35,7 +43,30 @@ def save_shadow_state(state: dict):
         json.dump(state, f, indent=4, default=str, ensure_ascii=False)
     os.replace(tmp, SHADOW_STATE_FILE)
 
-def evaluate_shadow_qds_cycle(symbol: str, df_4h: pd.DataFrame, df_1d: pd.DataFrame, legacy_decision: str, current_price: float, symbol_states: dict) -> dict:
+def generate_event_id(symbol: str, event_type: str, candle_time: int, timestamp_str: str = None) -> str:
+    """توليد معرّف حدث فريد وثابت يمنع تكرار أحداث WAIT لنفس الشمعة."""
+    sym_clean = symbol.replace('/', '_').strip()
+    if event_type == "WAIT":
+        return f"event_{sym_clean}_4h_{candle_time}_WAIT"
+    elif event_type == "EXIT":
+        ts = timestamp_str or datetime.now(timezone.utc).isoformat()
+        clean_ts = ts.replace('Z', '+00:00')
+        dt = datetime.fromisoformat(clean_ts).astimezone(timezone.utc)
+        epoch_us = int(dt.timestamp() * 1_000_000)
+        return f"event_{sym_clean}_4h_EXIT_{epoch_us}"
+    else:
+        return f"event_{sym_clean}_4h_{candle_time}_{event_type}"
+
+def evaluate_shadow_qds_cycle(
+    symbol: str,
+    df_4h: pd.DataFrame,
+    df_1d: pd.DataFrame,
+    legacy_decision: str,
+    current_price: float,
+    symbol_states: dict,
+    legacy_action: str = None,
+    position_state: str = None
+) -> dict:
     """
     تقييم شمعة مغلقة عبر نظام الـ QDS في وضع الظل (Shadow Mode).
     """
@@ -133,7 +164,16 @@ def evaluate_shadow_qds_cycle(symbol: str, df_4h: pd.DataFrame, df_1d: pd.DataFr
     tp_price = current_price + (stop_dist * 2.5) if (legacy_decision == "BUY" or qds_decision == "BUY") else 0.0
     sl_price = stop_price if (legacy_decision == "BUY" or qds_decision == "BUY") else 0.0
 
-    trade_id = f"shadow_{symbol.replace('/','_')}_{c_time}"
+    # تحديد سعر الدخول المرجعي: سعر دخول المركز الفعلي المفتوح عند الشراء والاحتفاظ
+    if legacy_action in ("BUY", "HOLD"):
+        rec_entry_price = symbol_states.get(symbol, {}).get('position', {}).get('entry_price', current_price)
+    else:
+        rec_entry_price = 0.0
+
+    if legacy_action == "EXIT":
+        trade_id = generate_event_id(symbol, "EXIT", c_time)
+    else:
+        trade_id = f"shadow_{symbol.replace('/','_')}_{c_time}"
     rec = trade_memory.build_trade_record(
         trade_id=trade_id,
         symbol=symbol,
@@ -146,19 +186,24 @@ def evaluate_shadow_qds_cycle(symbol: str, df_4h: pd.DataFrame, df_1d: pd.DataFr
         data_quality=data_quality,
         decision_reason=decision_reason,
         wait_reason=wait_reason_str,
-        entry_price=current_price if legacy_decision == "BUY" else 0.0,
+        entry_price=rec_entry_price,
         hypothetical_entry=current_price if qds_decision == "BUY" else 0.0,
         stop_loss_price=sl_price,
         take_profit_price=tp_price,
         is_candle_close_event=is_candle_close_event,
-        ablation_flags=ablation_flags
+        ablation_flags=ablation_flags,
+        legacy_action=legacy_action,
+        position_state=position_state,
+        qds_action=qds_decision
     )
     trade_memory.record_decision_event(rec)
 
     # تحديث الآفاق الزمنية و MFE / MAE لكل الأسلحة السابقة المسجلة لهذا الزوج
     trade_memory.update_open_records_excursions(symbol, current_price)
 
-    logging.info(f"👤 [Shadow QDS] {symbol} | Legacy: {legacy_decision} | QDS: {qds_decision} | {decision_reason}")
+    act_disp = legacy_action or legacy_decision
+    st_disp = position_state or "FLAT"
+    logging.info(f"👤 [Shadow QDS] {symbol} | Legacy: {act_disp} (State: {st_disp}) | QDS: {qds_decision} | {decision_reason}")
 
     return {
         "decision": qds_decision,
