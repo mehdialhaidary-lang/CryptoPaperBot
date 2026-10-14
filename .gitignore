@@ -4,3 +4,4 @@ paper_bot.lock
 run_bot_hidden.vbs
 
 paper_state.json
+*_backup.json
