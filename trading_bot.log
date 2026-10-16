@@ -3958,3 +3958,22 @@ KeyError: 'slow_ema'
 2026-10-16 21:44:56,494 [WARNING] ⚠️ فشل استدعاء Gemini API: HTTP Error 404: Not Found
 2026-10-16 21:44:56,915 [INFO] 💓 [BNB/USDT] نبضة حياة (uptime: 0.0h)
 2026-10-16 21:44:56,915 [INFO] ✅ انتهت جميع الدورات.
+2026-10-16 23:57:35,074 [INFO] ============================================================
+2026-10-16 23:57:35,074 [INFO] 🤖 GitHub Actions — بدء الدورة لكل الأزواج
+2026-10-16 23:57:35,075 [INFO] ============================================================
+2026-10-16 23:57:35,075 [INFO] 🔍 فحص BTC/USDT...
+2026-10-16 23:57:37,340 [INFO] 👤 [Shadow QDS] BTC/USDT | Legacy: WAIT (State: FLAT) | QDS: WAIT | QDS WAIT: لا يوجد تقاطع EMA صاعد طازج · الاتجاه اليومي هابط (Regime: TRENDING_DOWN | Score: 47.5)
+2026-10-16 23:57:37,340 [INFO] [BTC/USDT] ✅ الدورة مكتملة. (Legacy: WAIT [FLAT])
+2026-10-16 23:57:37,340 [INFO] 🔍 فحص ETH/USDT...
+2026-10-16 23:57:37,967 [INFO] 👤 [Shadow QDS] ETH/USDT | Legacy: WAIT (State: FLAT) | QDS: WAIT | QDS WAIT: لا يوجد تقاطع EMA صاعد طازج · الاتجاه اليومي هابط (Regime: TRENDING_DOWN | Score: 47.5)
+2026-10-16 23:57:37,967 [INFO] [ETH/USDT] ✅ الدورة مكتملة. (Legacy: WAIT [FLAT])
+2026-10-16 23:57:37,968 [INFO] 🔍 فحص SOL/USDT...
+2026-10-16 23:57:38,595 [INFO] 👤 [Shadow QDS] SOL/USDT | Legacy: WAIT (State: FLAT) | QDS: WAIT | QDS WAIT: لا يوجد تقاطع EMA صاعد طازج · الاتجاه اليومي هابط · RSI (39.9) أقل من 40 (Regime: TRENDING_DOWN | Score: 45.0)
+2026-10-16 23:57:38,595 [INFO] [SOL/USDT] ✅ الدورة مكتملة. (Legacy: WAIT [FLAT])
+2026-10-16 23:57:38,596 [INFO] 🔍 فحص LINK/USDT...
+2026-10-16 23:57:39,223 [INFO] 👤 [Shadow QDS] LINK/USDT | Legacy: WAIT (State: FLAT) | QDS: WAIT | QDS WAIT: لا يوجد تقاطع EMA صاعد طازج · الاتجاه اليومي هابط (Regime: TRENDING_DOWN | Score: 47.5)
+2026-10-16 23:57:39,223 [INFO] [LINK/USDT] ✅ الدورة مكتملة. (Legacy: WAIT [FLAT])
+2026-10-16 23:57:39,223 [INFO] 🔍 فحص BNB/USDT...
+2026-10-16 23:57:39,849 [INFO] 👤 [Shadow QDS] BNB/USDT | Legacy: WAIT (State: FLAT) | QDS: WAIT | QDS WAIT: لا يوجد تقاطع EMA صاعد طازج · الاتجاه اليومي هابط · RSI (37.8) أقل من 40 (Regime: TRENDING_DOWN | Score: 45.0)
+2026-10-16 23:57:39,850 [INFO] [BNB/USDT] ✅ الدورة مكتملة. (Legacy: WAIT [FLAT])
+2026-10-16 23:57:39,850 [INFO] ✅ انتهت جميع الدورات.
