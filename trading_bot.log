@@ -4035,3 +4035,37 @@ KeyError: 'slow_ema'
 2026-10-17 08:35:24,670 [INFO] 👤 [Shadow QDS] BNB/USDT | Legacy: WAIT (State: FLAT) | QDS: WAIT | QDS WAIT: لا يوجد تقاطع EMA صاعد طازج · الاتجاه اليومي هابط · RSI (39.5) أقل من 40 (Regime: TRENDING_DOWN | Score: 45.0)
 2026-10-17 08:35:24,670 [INFO] [BNB/USDT] ✅ الدورة مكتملة. (Legacy: WAIT [FLAT])
 2026-10-17 08:35:24,670 [INFO] ✅ انتهت جميع الدورات.
+2026-10-17 12:26:15,435 [INFO] ============================================================
+2026-10-17 12:26:15,435 [INFO] 🤖 GitHub Actions — بدء الدورة لكل الأزواج
+2026-10-17 12:26:15,435 [INFO] ============================================================
+2026-10-17 12:26:15,435 [INFO] 🔍 فحص BTC/USDT...
+2026-10-17 12:26:17,211 [INFO] 📊 [BTC/USDT] شمعة مغلقة [2026-10-17 08:00:00+00:00] | Close: $81,576.33 | Fast EMA: 81743.77 | Slow EMA: 82256.86 | RSI: 43.7 | ATR: 805.85 | Daily Trend Up: False
+2026-10-17 12:26:17,605 [INFO] 👤 [Shadow QDS] BTC/USDT | Legacy: WAIT (State: FLAT) | QDS: WAIT | QDS WAIT: لا يوجد تقاطع EMA صاعد طازج · الاتجاه اليومي هابط (Regime: TRENDING_DOWN | Score: 47.5)
+2026-10-17 12:26:17,605 [INFO] [BTC/USDT] ✅ الدورة مكتملة. (Legacy: WAIT [FLAT])
+2026-10-17 12:26:17,605 [INFO] 🔍 فحص ETH/USDT...
+2026-10-17 12:26:17,831 [INFO] 📊 [ETH/USDT] شمعة مغلقة [2026-10-17 08:00:00+00:00] | Close: $2,434.20 | Fast EMA: 2433.25 | Slow EMA: 2457.11 | RSI: 46.1 | ATR: 36.54 | Daily Trend Up: False
+2026-10-17 12:26:18,197 [INFO] 👤 [Shadow QDS] ETH/USDT | Legacy: WAIT (State: FLAT) | QDS: WAIT | QDS WAIT: لا يوجد تقاطع EMA صاعد طازج · الاتجاه اليومي هابط (Regime: TRENDING_DOWN | Score: 50.0)
+2026-10-17 12:26:18,197 [INFO] [ETH/USDT] ✅ الدورة مكتملة. (Legacy: WAIT [FLAT])
+2026-10-17 12:26:18,197 [INFO] 🔍 فحص SOL/USDT...
+2026-10-17 12:26:18,425 [INFO] 📊 [SOL/USDT] شمعة مغلقة [2026-10-17 08:00:00+00:00] | Close: $104.67 | Fast EMA: 104.83 | Slow EMA: 106.16 | RSI: 44.7 | ATR: 1.86 | Daily Trend Up: False
+2026-10-17 12:26:18,787 [INFO] 👤 [Shadow QDS] SOL/USDT | Legacy: WAIT (State: FLAT) | QDS: WAIT | QDS WAIT: لا يوجد تقاطع EMA صاعد طازج · الاتجاه اليومي هابط (Regime: TRENDING_DOWN | Score: 47.5)
+2026-10-17 12:26:18,787 [INFO] [SOL/USDT] ✅ الدورة مكتملة. (Legacy: WAIT [FLAT])
+2026-10-17 12:26:18,787 [INFO] 🔍 فحص LINK/USDT...
+2026-10-17 12:26:19,013 [INFO] 📊 [LINK/USDT] شمعة مغلقة [2026-10-17 08:00:00+00:00] | Close: $12.17 | Fast EMA: 12.33 | Slow EMA: 12.57 | RSI: 39.1 | ATR: 0.25 | Daily Trend Up: False
+2026-10-17 12:26:19,384 [INFO] 👤 [Shadow QDS] LINK/USDT | Legacy: WAIT (State: FLAT) | QDS: WAIT | QDS WAIT: لا يوجد تقاطع EMA صاعد طازج · الاتجاه اليومي هابط · RSI (39.1) أقل من 40 (Regime: TRENDING_DOWN | Score: 45.0)
+2026-10-17 12:26:19,384 [INFO] [LINK/USDT] ✅ الدورة مكتملة. (Legacy: WAIT [FLAT])
+2026-10-17 12:26:19,385 [INFO] 🔍 فحص BNB/USDT...
+2026-10-17 12:26:19,613 [INFO] 📊 [BNB/USDT] شمعة مغلقة [2026-10-17 08:00:00+00:00] | Close: $721.09 | Fast EMA: 723.79 | Slow EMA: 732.14 | RSI: 38.2 | ATR: 6.86 | Daily Trend Up: False
+2026-10-17 12:26:19,976 [INFO] 👤 [Shadow QDS] BNB/USDT | Legacy: WAIT (State: FLAT) | QDS: WAIT | QDS WAIT: لا يوجد تقاطع EMA صاعد طازج · الاتجاه اليومي هابط · RSI (38.2) أقل من 40 (Regime: TRENDING_DOWN | Score: 45.0)
+2026-10-17 12:26:19,976 [INFO] [BNB/USDT] ✅ الدورة مكتملة. (Legacy: WAIT [FLAT])
+2026-10-17 12:26:20,158 [WARNING] ⚠️ فشل استدعاء Gemini API: HTTP Error 404: Not Found
+2026-10-17 12:26:20,739 [INFO] 💓 [BTC/USDT] نبضة حياة (uptime: 0.0h)
+2026-10-17 12:26:20,871 [WARNING] ⚠️ فشل استدعاء Gemini API: HTTP Error 404: Not Found
+2026-10-17 12:26:21,403 [INFO] 💓 [ETH/USDT] نبضة حياة (uptime: 0.0h)
+2026-10-17 12:26:21,530 [WARNING] ⚠️ فشل استدعاء Gemini API: HTTP Error 404: Not Found
+2026-10-17 12:26:22,049 [INFO] 💓 [SOL/USDT] نبضة حياة (uptime: 0.0h)
+2026-10-17 12:26:22,167 [WARNING] ⚠️ فشل استدعاء Gemini API: HTTP Error 404: Not Found
+2026-10-17 12:26:22,633 [INFO] 💓 [LINK/USDT] نبضة حياة (uptime: 0.0h)
+2026-10-17 12:26:22,751 [WARNING] ⚠️ فشل استدعاء Gemini API: HTTP Error 404: Not Found
+2026-10-17 12:26:23,202 [INFO] 💓 [BNB/USDT] نبضة حياة (uptime: 0.0h)
+2026-10-17 12:26:23,203 [INFO] ✅ انتهت جميع الدورات.
