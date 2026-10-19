@@ -4493,3 +4493,32 @@ KeyError: 'slow_ema'
 2026-10-19 20:30:24,250 [INFO] 👤 [Shadow QDS] BNB/USDT | Legacy: WAIT (State: FLAT) | QDS: WAIT | QDS WAIT: لا يوجد تقاطع EMA صاعد طازج · الاتجاه اليومي هابط (Regime: TRENDING_DOWN | Score: 35.0)
 2026-10-19 20:30:24,250 [INFO] [BNB/USDT] ✅ الدورة مكتملة. (Legacy: WAIT [FLAT])
 2026-10-19 20:30:24,251 [INFO] ✅ انتهت جميع الدورات.
+2026-10-19 23:54:52,694 [INFO] ============================================================
+2026-10-19 23:54:52,694 [INFO] 🤖 GitHub Actions — بدء الدورة لكل الأزواج
+2026-10-19 23:54:52,694 [INFO] ============================================================
+2026-10-19 23:54:52,694 [INFO] 🔍 فحص BTC/USDT...
+2026-10-19 23:54:55,338 [INFO] 👤 [Shadow QDS] BTC/USDT | Legacy: WAIT (State: FLAT) | QDS: WAIT | QDS WAIT: لا يوجد تقاطع EMA صاعد طازج · الاتجاه اليومي هابط (Regime: TRENDING_DOWN | Score: 35.0)
+2026-10-19 23:54:55,339 [INFO] [BTC/USDT] ✅ الدورة مكتملة. (Legacy: WAIT [FLAT])
+2026-10-19 23:54:55,339 [INFO] 🔍 فحص ETH/USDT...
+2026-10-19 23:54:56,080 [INFO] 👤 [Shadow QDS] ETH/USDT | Legacy: WAIT (State: FLAT) | QDS: WAIT | QDS WAIT: لا يوجد تقاطع EMA صاعد طازج · الاتجاه اليومي هابط (Regime: TRENDING_DOWN | Score: 47.5)
+2026-10-19 23:54:56,080 [INFO] [ETH/USDT] ✅ الدورة مكتملة. (Legacy: WAIT [FLAT])
+2026-10-19 23:54:56,080 [INFO] 🔍 فحص SOL/USDT...
+2026-10-19 23:54:56,818 [INFO] 👤 [Shadow QDS] SOL/USDT | Legacy: WAIT (State: FLAT) | QDS: WAIT | QDS WAIT: لا يوجد تقاطع EMA صاعد طازج · الاتجاه اليومي هابط (Regime: TRENDING_DOWN | Score: 50.0)
+2026-10-19 23:54:56,818 [INFO] [SOL/USDT] ✅ الدورة مكتملة. (Legacy: WAIT [FLAT])
+2026-10-19 23:54:56,818 [INFO] 🔍 فحص LINK/USDT...
+2026-10-19 23:54:57,559 [INFO] 👤 [Shadow QDS] LINK/USDT | Legacy: WAIT (State: FLAT) | QDS: WAIT | QDS WAIT: لا يوجد تقاطع EMA صاعد طازج · الاتجاه اليومي هابط (Regime: TRENDING_DOWN | Score: 47.5)
+2026-10-19 23:54:57,560 [INFO] [LINK/USDT] ✅ الدورة مكتملة. (Legacy: WAIT [FLAT])
+2026-10-19 23:54:57,560 [INFO] 🔍 فحص BNB/USDT...
+2026-10-19 23:54:58,302 [INFO] 👤 [Shadow QDS] BNB/USDT | Legacy: WAIT (State: FLAT) | QDS: WAIT | QDS WAIT: لا يوجد تقاطع EMA صاعد طازج · الاتجاه اليومي هابط (Regime: TRENDING_DOWN | Score: 35.0)
+2026-10-19 23:54:58,302 [INFO] [BNB/USDT] ✅ الدورة مكتملة. (Legacy: WAIT [FLAT])
+2026-10-19 23:54:58,452 [WARNING] ⚠️ فشل استدعاء Gemini API: HTTP Error 404: Not Found
+2026-10-19 23:54:58,925 [INFO] 💓 [BTC/USDT] نبضة حياة (uptime: 0.0h)
+2026-10-19 23:54:59,100 [WARNING] ⚠️ فشل استدعاء Gemini API: HTTP Error 404: Not Found
+2026-10-19 23:54:59,452 [INFO] 💓 [ETH/USDT] نبضة حياة (uptime: 0.0h)
+2026-10-19 23:54:59,560 [WARNING] ⚠️ فشل استدعاء Gemini API: HTTP Error 404: Not Found
+2026-10-19 23:54:59,922 [INFO] 💓 [SOL/USDT] نبضة حياة (uptime: 0.0h)
+2026-10-19 23:55:00,025 [WARNING] ⚠️ فشل استدعاء Gemini API: HTTP Error 404: Not Found
+2026-10-19 23:55:00,379 [INFO] 💓 [LINK/USDT] نبضة حياة (uptime: 0.0h)
+2026-10-19 23:55:00,531 [WARNING] ⚠️ فشل استدعاء Gemini API: HTTP Error 404: Not Found
+2026-10-19 23:55:00,896 [INFO] 💓 [BNB/USDT] نبضة حياة (uptime: 0.0h)
+2026-10-19 23:55:00,896 [INFO] ✅ انتهت جميع الدورات.
