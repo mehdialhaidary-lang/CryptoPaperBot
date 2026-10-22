@@ -4982,3 +4982,32 @@ KeyError: 'slow_ema'
 2026-10-22 20:50:07,173 [INFO] 👤 [Shadow QDS] BNB/USDT | Legacy: WAIT (State: FLAT) | QDS: WAIT | QDS WAIT: لا يوجد تقاطع EMA صاعد طازج (Regime: SIDEWAYS | Score: 65.0)
 2026-10-22 20:50:07,173 [INFO] [BNB/USDT] ✅ الدورة مكتملة. (Legacy: WAIT [FLAT])
 2026-10-22 20:50:07,173 [INFO] ✅ انتهت جميع الدورات.
+2026-10-22 23:55:24,718 [INFO] ============================================================
+2026-10-22 23:55:24,719 [INFO] 🤖 GitHub Actions — بدء الدورة لكل الأزواج
+2026-10-22 23:55:24,719 [INFO] ============================================================
+2026-10-22 23:55:24,719 [INFO] 🔍 فحص BTC/USDT...
+2026-10-22 23:55:27,383 [INFO] 👤 [Shadow QDS] BTC/USDT | Legacy: WAIT (State: FLAT) | QDS: WAIT | QDS WAIT: لا يوجد تقاطع EMA صاعد طازج (Regime: TRENDING_DOWN | Score: 57.5)
+2026-10-22 23:55:27,384 [INFO] [BTC/USDT] ✅ الدورة مكتملة. (Legacy: WAIT [FLAT])
+2026-10-22 23:55:27,384 [INFO] 🔍 فحص ETH/USDT...
+2026-10-22 23:55:28,153 [INFO] 👤 [Shadow QDS] ETH/USDT | Legacy: WAIT (State: FLAT) | QDS: WAIT | QDS WAIT: لا يوجد تقاطع EMA صاعد طازج · الاتجاه اليومي هابط (Regime: SIDEWAYS | Score: 52.5)
+2026-10-22 23:55:28,154 [INFO] [ETH/USDT] ✅ الدورة مكتملة. (Legacy: WAIT [FLAT])
+2026-10-22 23:55:28,154 [INFO] 🔍 فحص SOL/USDT...
+2026-10-22 23:55:28,923 [INFO] 👤 [Shadow QDS] SOL/USDT | Legacy: WAIT (State: FLAT) | QDS: WAIT | QDS WAIT: لا يوجد تقاطع EMA صاعد طازج · الاتجاه اليومي هابط (Regime: SIDEWAYS | Score: 52.5)
+2026-10-22 23:55:28,923 [INFO] [SOL/USDT] ✅ الدورة مكتملة. (Legacy: WAIT [FLAT])
+2026-10-22 23:55:28,923 [INFO] 🔍 فحص LINK/USDT...
+2026-10-22 23:55:29,679 [INFO] 👤 [Shadow QDS] LINK/USDT | Legacy: WAIT (State: FLAT) | QDS: WAIT | QDS WAIT: لا يوجد تقاطع EMA صاعد طازج · الاتجاه اليومي هابط (Regime: SIDEWAYS | Score: 52.5)
+2026-10-22 23:55:29,680 [INFO] [LINK/USDT] ✅ الدورة مكتملة. (Legacy: WAIT [FLAT])
+2026-10-22 23:55:29,680 [INFO] 🔍 فحص BNB/USDT...
+2026-10-22 23:55:30,533 [INFO] 👤 [Shadow QDS] BNB/USDT | Legacy: WAIT (State: FLAT) | QDS: WAIT | QDS WAIT: لا يوجد تقاطع EMA صاعد طازج (Regime: SIDEWAYS | Score: 65.0)
+2026-10-22 23:55:30,533 [INFO] [BNB/USDT] ✅ الدورة مكتملة. (Legacy: WAIT [FLAT])
+2026-10-22 23:55:30,705 [WARNING] ⚠️ فشل استدعاء Gemini API: HTTP Error 404: Not Found
+2026-10-22 23:55:31,135 [INFO] 💓 [BTC/USDT] نبضة حياة (uptime: 0.0h)
+2026-10-22 23:55:31,245 [WARNING] ⚠️ فشل استدعاء Gemini API: HTTP Error 404: Not Found
+2026-10-22 23:55:31,610 [INFO] 💓 [ETH/USDT] نبضة حياة (uptime: 0.0h)
+2026-10-22 23:55:31,748 [WARNING] ⚠️ فشل استدعاء Gemini API: HTTP Error 404: Not Found
+2026-10-22 23:55:32,104 [INFO] 💓 [SOL/USDT] نبضة حياة (uptime: 0.0h)
+2026-10-22 23:55:32,210 [WARNING] ⚠️ فشل استدعاء Gemini API: HTTP Error 404: Not Found
+2026-10-22 23:55:32,555 [INFO] 💓 [LINK/USDT] نبضة حياة (uptime: 0.0h)
+2026-10-22 23:55:32,662 [WARNING] ⚠️ فشل استدعاء Gemini API: HTTP Error 404: Not Found
+2026-10-22 23:55:33,031 [INFO] 💓 [BNB/USDT] نبضة حياة (uptime: 0.0h)
+2026-10-22 23:55:33,031 [INFO] ✅ انتهت جميع الدورات.
