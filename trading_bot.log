@@ -5745,3 +5745,37 @@ KeyError: 'slow_ema'
 2026-10-27 06:40:57,867 [INFO] 👤 [Shadow QDS] BNB/USDT | Legacy: WAIT (State: FLAT) | QDS: WAIT | QDS WAIT: لا يوجد تقاطع EMA صاعد طازج (Regime: SIDEWAYS | Score: 65.0)
 2026-10-27 06:40:57,867 [INFO] [BNB/USDT] ✅ الدورة مكتملة. (Legacy: WAIT [FLAT])
 2026-10-27 06:40:57,868 [INFO] ✅ انتهت جميع الدورات.
+2026-10-27 12:41:54,407 [INFO] ============================================================
+2026-10-27 12:41:54,407 [INFO] 🤖 GitHub Actions — بدء الدورة لكل الأزواج
+2026-10-27 12:41:54,407 [INFO] ============================================================
+2026-10-27 12:41:54,407 [INFO] 🔍 فحص BTC/USDT...
+2026-10-27 12:41:56,482 [INFO] 📊 [BTC/USDT] شمعة مغلقة [2026-10-27 08:00:00+00:00] | Close: $79,910.01 | Fast EMA: 80035.84 | Slow EMA: 80699.07 | RSI: 39.8 | ATR: 736.24 | Daily Trend Up: False
+2026-10-27 12:41:56,984 [INFO] 👤 [Shadow QDS] BTC/USDT | Legacy: WAIT (State: FLAT) | QDS: WAIT | QDS WAIT: لا يوجد تقاطع EMA صاعد طازج · الاتجاه اليومي هابط · RSI (39.8) أقل من 40 (Regime: TRENDING_DOWN | Score: 30.0)
+2026-10-27 12:41:56,985 [INFO] [BTC/USDT] ✅ الدورة مكتملة. (Legacy: WAIT [FLAT])
+2026-10-27 12:41:56,985 [INFO] 🔍 فحص ETH/USDT...
+2026-10-27 12:41:57,283 [INFO] 📊 [ETH/USDT] شمعة مغلقة [2026-10-27 08:00:00+00:00] | Close: $2,316.04 | Fast EMA: 2321.36 | Slow EMA: 2352.80 | RSI: 39.5 | ATR: 31.92 | Daily Trend Up: False
+2026-10-27 12:41:57,762 [INFO] 👤 [Shadow QDS] ETH/USDT | Legacy: WAIT (State: FLAT) | QDS: WAIT | QDS WAIT: لا يوجد تقاطع EMA صاعد طازج · الاتجاه اليومي هابط · RSI (39.5) أقل من 40 (Regime: TRENDING_DOWN | Score: 45.0)
+2026-10-27 12:41:57,762 [INFO] [ETH/USDT] ✅ الدورة مكتملة. (Legacy: WAIT [FLAT])
+2026-10-27 12:41:57,762 [INFO] 🔍 فحص SOL/USDT...
+2026-10-27 12:41:58,061 [INFO] 📊 [SOL/USDT] شمعة مغلقة [2026-10-27 08:00:00+00:00] | Close: $100.13 | Fast EMA: 100.62 | Slow EMA: 101.99 | RSI: 39.2 | ATR: 1.49 | Daily Trend Up: False
+2026-10-27 12:41:58,540 [INFO] 👤 [Shadow QDS] SOL/USDT | Legacy: WAIT (State: FLAT) | QDS: WAIT | QDS WAIT: لا يوجد تقاطع EMA صاعد طازج · الاتجاه اليومي هابط · RSI (39.2) أقل من 40 (Regime: TRENDING_DOWN | Score: 45.0)
+2026-10-27 12:41:58,540 [INFO] [SOL/USDT] ✅ الدورة مكتملة. (Legacy: WAIT [FLAT])
+2026-10-27 12:41:58,540 [INFO] 🔍 فحص LINK/USDT...
+2026-10-27 12:41:58,848 [INFO] 📊 [LINK/USDT] شمعة مغلقة [2026-10-27 08:00:00+00:00] | Close: $11.32 | Fast EMA: 11.39 | Slow EMA: 11.62 | RSI: 37.6 | ATR: 0.20 | Daily Trend Up: False
+2026-10-27 12:41:59,441 [INFO] 👤 [Shadow QDS] LINK/USDT | Legacy: WAIT (State: FLAT) | QDS: WAIT | QDS WAIT: لا يوجد تقاطع EMA صاعد طازج · الاتجاه اليومي هابط · RSI (37.6) أقل من 40 (Regime: TRENDING_DOWN | Score: 45.0)
+2026-10-27 12:41:59,441 [INFO] [LINK/USDT] ✅ الدورة مكتملة. (Legacy: WAIT [FLAT])
+2026-10-27 12:41:59,441 [INFO] 🔍 فحص BNB/USDT...
+2026-10-27 12:41:59,759 [INFO] 📊 [BNB/USDT] شمعة مغلقة [2026-10-27 08:00:00+00:00] | Close: $740.36 | Fast EMA: 740.26 | Slow EMA: 739.27 | RSI: 51.1 | ATR: 7.63 | Daily Trend Up: True
+2026-10-27 12:42:00,239 [INFO] 👤 [Shadow QDS] BNB/USDT | Legacy: WAIT (State: FLAT) | QDS: WAIT | QDS WAIT: لا يوجد تقاطع EMA صاعد طازج (Regime: SIDEWAYS | Score: 65.0)
+2026-10-27 12:42:00,239 [INFO] [BNB/USDT] ✅ الدورة مكتملة. (Legacy: WAIT [FLAT])
+2026-10-27 12:42:00,391 [WARNING] ⚠️ فشل استدعاء Gemini API: HTTP Error 404: Not Found
+2026-10-27 12:42:00,832 [INFO] 💓 [BTC/USDT] نبضة حياة (uptime: 0.0h)
+2026-10-27 12:42:01,077 [WARNING] ⚠️ فشل استدعاء Gemini API: HTTP Error 404: Not Found
+2026-10-27 12:42:01,434 [INFO] 💓 [ETH/USDT] نبضة حياة (uptime: 0.0h)
+2026-10-27 12:42:01,612 [WARNING] ⚠️ فشل استدعاء Gemini API: HTTP Error 404: Not Found
+2026-10-27 12:42:02,105 [INFO] 💓 [SOL/USDT] نبضة حياة (uptime: 0.0h)
+2026-10-27 12:42:02,280 [WARNING] ⚠️ فشل استدعاء Gemini API: HTTP Error 404: Not Found
+2026-10-27 12:42:02,671 [INFO] 💓 [LINK/USDT] نبضة حياة (uptime: 0.0h)
+2026-10-27 12:42:02,895 [WARNING] ⚠️ فشل استدعاء Gemini API: HTTP Error 404: Not Found
+2026-10-27 12:42:03,277 [INFO] 💓 [BNB/USDT] نبضة حياة (uptime: 0.0h)
+2026-10-27 12:42:03,378 [INFO] ✅ انتهت جميع الدورات.
