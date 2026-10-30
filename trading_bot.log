@@ -6129,3 +6129,37 @@ KeyError: 'slow_ema'
 2026-10-30 01:58:35,140 [INFO] 👤 [Shadow QDS] BNB/USDT | Legacy: WAIT (State: FLAT) | QDS: WAIT | QDS WAIT: لا يوجد تقاطع EMA صاعد طازج · RSI (30.1) أقل من 40 (Regime: SIDEWAYS | Score: 55.0)
 2026-10-30 01:58:35,140 [INFO] [BNB/USDT] ✅ الدورة مكتملة. (Legacy: WAIT [FLAT])
 2026-10-30 01:58:35,141 [INFO] ✅ انتهت جميع الدورات.
+2026-10-30 08:30:02,134 [INFO] ============================================================
+2026-10-30 08:30:02,134 [INFO] 🤖 GitHub Actions — بدء الدورة لكل الأزواج
+2026-10-30 08:30:02,134 [INFO] ============================================================
+2026-10-30 08:30:02,134 [INFO] 🔍 فحص BTC/USDT...
+2026-10-30 08:30:04,665 [INFO] 📊 [BTC/USDT] شمعة مغلقة [2026-10-30 04:00:00+00:00] | Close: $78,185.38 | Fast EMA: 79393.43 | Slow EMA: 80301.02 | RSI: 36.9 | ATR: 1087.06 | Daily Trend Up: False
+2026-10-30 08:30:05,437 [INFO] 👤 [Shadow QDS] BTC/USDT | Legacy: WAIT (State: FLAT) | QDS: WAIT | QDS WAIT: لا يوجد تقاطع EMA صاعد طازج · الاتجاه اليومي هابط · RSI (36.9) أقل من 40 (Regime: TRENDING_DOWN | Score: 45.0)
+2026-10-30 08:30:05,438 [INFO] [BTC/USDT] ✅ الدورة مكتملة. (Legacy: WAIT [FLAT])
+2026-10-30 08:30:05,438 [INFO] 🔍 فحص ETH/USDT...
+2026-10-30 08:30:05,750 [INFO] 📊 [ETH/USDT] شمعة مغلقة [2026-10-30 04:00:00+00:00] | Close: $2,237.07 | Fast EMA: 2288.06 | Slow EMA: 2328.61 | RSI: 33.5 | ATR: 43.56 | Daily Trend Up: False
+2026-10-30 08:30:06,262 [INFO] 👤 [Shadow QDS] ETH/USDT | Legacy: WAIT (State: FLAT) | QDS: WAIT | QDS WAIT: لا يوجد تقاطع EMA صاعد طازج · الاتجاه اليومي هابط · RSI (33.5) أقل من 40 (Regime: TRENDING_DOWN | Score: 45.0)
+2026-10-30 08:30:06,262 [INFO] [ETH/USDT] ✅ الدورة مكتملة. (Legacy: WAIT [FLAT])
+2026-10-30 08:30:06,262 [INFO] 🔍 فحص SOL/USDT...
+2026-10-30 08:30:06,571 [INFO] 📊 [SOL/USDT] شمعة مغلقة [2026-10-30 04:00:00+00:00] | Close: $97.35 | Fast EMA: 98.82 | Slow EMA: 100.70 | RSI: 39.8 | ATR: 2.19 | Daily Trend Up: False
+2026-10-30 08:30:07,103 [INFO] 👤 [Shadow QDS] SOL/USDT | Legacy: WAIT (State: FLAT) | QDS: WAIT | QDS WAIT: لا يوجد تقاطع EMA صاعد طازج · الاتجاه اليومي هابط · RSI (39.8) أقل من 40 (Regime: SIDEWAYS | Score: 50.0)
+2026-10-30 08:30:07,104 [INFO] [SOL/USDT] ✅ الدورة مكتملة. (Legacy: WAIT [FLAT])
+2026-10-30 08:30:07,104 [INFO] 🔍 فحص LINK/USDT...
+2026-10-30 08:30:07,410 [INFO] 📊 [LINK/USDT] شمعة مغلقة [2026-10-30 04:00:00+00:00] | Close: $11.05 | Fast EMA: 11.27 | Slow EMA: 11.51 | RSI: 42.2 | ATR: 0.35 | Daily Trend Up: False
+2026-10-30 08:30:07,919 [INFO] 👤 [Shadow QDS] LINK/USDT | Legacy: WAIT (State: FLAT) | QDS: WAIT | QDS WAIT: لا يوجد تقاطع EMA صاعد طازج · الاتجاه اليومي هابط (Regime: TRENDING_DOWN | Score: 42.5)
+2026-10-30 08:30:07,919 [INFO] [LINK/USDT] ✅ الدورة مكتملة. (Legacy: WAIT [FLAT])
+2026-10-30 08:30:07,919 [INFO] 🔍 فحص BNB/USDT...
+2026-10-30 08:30:08,225 [INFO] 📊 [BNB/USDT] شمعة مغلقة [2026-10-30 04:00:00+00:00] | Close: $708.09 | Fast EMA: 727.52 | Slow EMA: 738.74 | RSI: 37.8 | ATR: 15.89 | Daily Trend Up: False
+2026-10-30 08:30:08,737 [INFO] 👤 [Shadow QDS] BNB/USDT | Legacy: WAIT (State: FLAT) | QDS: WAIT | QDS WAIT: لا يوجد تقاطع EMA صاعد طازج · الاتجاه اليومي هابط · RSI (37.8) أقل من 40 (Regime: TRENDING_DOWN | Score: 35.0)
+2026-10-30 08:30:08,737 [INFO] [BNB/USDT] ✅ الدورة مكتملة. (Legacy: WAIT [FLAT])
+2026-10-30 08:30:08,891 [WARNING] ⚠️ فشل استدعاء Gemini API: HTTP Error 404: Not Found
+2026-10-30 08:30:09,504 [INFO] 💓 [BTC/USDT] نبضة حياة (uptime: 0.0h)
+2026-10-30 08:30:09,632 [WARNING] ⚠️ فشل استدعاء Gemini API: HTTP Error 404: Not Found
+2026-10-30 08:30:10,007 [INFO] 💓 [ETH/USDT] نبضة حياة (uptime: 0.0h)
+2026-10-30 08:30:10,152 [WARNING] ⚠️ فشل استدعاء Gemini API: HTTP Error 404: Not Found
+2026-10-30 08:30:10,563 [INFO] 💓 [SOL/USDT] نبضة حياة (uptime: 0.0h)
+2026-10-30 08:30:10,709 [WARNING] ⚠️ فشل استدعاء Gemini API: HTTP Error 404: Not Found
+2026-10-30 08:30:11,246 [INFO] 💓 [LINK/USDT] نبضة حياة (uptime: 0.0h)
+2026-10-30 08:30:11,427 [WARNING] ⚠️ فشل استدعاء Gemini API: HTTP Error 404: Not Found
+2026-10-30 08:30:11,814 [INFO] 💓 [BNB/USDT] نبضة حياة (uptime: 0.0h)
+2026-10-30 08:30:11,815 [INFO] ✅ انتهت جميع الدورات.
