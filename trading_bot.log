@@ -6274,3 +6274,37 @@ KeyError: 'slow_ema'
 2026-10-31 04:47:31,620 [INFO] 👤 [Shadow QDS] BNB/USDT | Legacy: WAIT (State: FLAT) | QDS: WAIT | QDS WAIT: لا يوجد تقاطع EMA صاعد طازج · الاتجاه اليومي هابط · RSI (38.0) أقل من 40 (Regime: TRENDING_DOWN | Score: 45.0)
 2026-10-31 04:47:31,620 [INFO] [BNB/USDT] ✅ الدورة مكتملة. (Legacy: WAIT [FLAT])
 2026-10-31 04:47:31,621 [INFO] ✅ انتهت جميع الدورات.
+2026-10-31 10:47:13,857 [INFO] ============================================================
+2026-10-31 10:47:13,858 [INFO] 🤖 GitHub Actions — بدء الدورة لكل الأزواج
+2026-10-31 10:47:13,858 [INFO] ============================================================
+2026-10-31 10:47:13,858 [INFO] 🔍 فحص BTC/USDT...
+2026-10-31 10:47:15,698 [INFO] 📊 [BTC/USDT] شمعة مغلقة [2026-10-31 04:00:00+00:00] | Close: $77,356.00 | Fast EMA: 77756.79 | Slow EMA: 79311.86 | RSI: 36.7 | ATR: 1012.82 | Daily Trend Up: False
+2026-10-31 10:47:16,119 [INFO] 👤 [Shadow QDS] BTC/USDT | Legacy: WAIT (State: FLAT) | QDS: WAIT | QDS WAIT: لا يوجد تقاطع EMA صاعد طازج · الاتجاه اليومي هابط · RSI (36.7) أقل من 40 (Regime: TRENDING_DOWN | Score: 45.0)
+2026-10-31 10:47:16,119 [INFO] [BTC/USDT] ✅ الدورة مكتملة. (Legacy: WAIT [FLAT])
+2026-10-31 10:47:16,119 [INFO] 🔍 فحص ETH/USDT...
+2026-10-31 10:47:16,365 [INFO] 📊 [ETH/USDT] شمعة مغلقة [2026-10-31 04:00:00+00:00] | Close: $2,244.04 | Fast EMA: 2251.08 | Slow EMA: 2299.20 | RSI: 37.4 | ATR: 36.68 | Daily Trend Up: False
+2026-10-31 10:47:16,766 [INFO] 👤 [Shadow QDS] ETH/USDT | Legacy: WAIT (State: FLAT) | QDS: WAIT | QDS WAIT: لا يوجد تقاطع EMA صاعد طازج · الاتجاه اليومي هابط · RSI (37.4) أقل من 40 (Regime: TRENDING_DOWN | Score: 45.0)
+2026-10-31 10:47:16,766 [INFO] [ETH/USDT] ✅ الدورة مكتملة. (Legacy: WAIT [FLAT])
+2026-10-31 10:47:16,766 [INFO] 🔍 فحص SOL/USDT...
+2026-10-31 10:47:17,013 [INFO] 📊 [SOL/USDT] شمعة مغلقة [2026-10-31 04:00:00+00:00] | Close: $95.64 | Fast EMA: 96.46 | Slow EMA: 99.07 | RSI: 38.4 | ATR: 1.96 | Daily Trend Up: False
+2026-10-31 10:47:17,413 [INFO] 👤 [Shadow QDS] SOL/USDT | Legacy: WAIT (State: FLAT) | QDS: WAIT | QDS WAIT: لا يوجد تقاطع EMA صاعد طازج · الاتجاه اليومي هابط · RSI (38.4) أقل من 40 (Regime: TRENDING_DOWN | Score: 45.0)
+2026-10-31 10:47:17,414 [INFO] [SOL/USDT] ✅ الدورة مكتملة. (Legacy: WAIT [FLAT])
+2026-10-31 10:47:17,414 [INFO] 🔍 فحص LINK/USDT...
+2026-10-31 10:47:17,660 [INFO] 📊 [LINK/USDT] شمعة مغلقة [2026-10-31 04:00:00+00:00] | Close: $11.39 | Fast EMA: 11.32 | Slow EMA: 11.43 | RSI: 49.4 | ATR: 0.33 | Daily Trend Up: False
+2026-10-31 10:47:18,061 [INFO] 👤 [Shadow QDS] LINK/USDT | Legacy: WAIT (State: FLAT) | QDS: WAIT | QDS WAIT: لا يوجد تقاطع EMA صاعد طازج · الاتجاه اليومي هابط (Regime: SIDEWAYS | Score: 55.0)
+2026-10-31 10:47:18,061 [INFO] [LINK/USDT] ✅ الدورة مكتملة. (Legacy: WAIT [FLAT])
+2026-10-31 10:47:18,062 [INFO] 🔍 فحص BNB/USDT...
+2026-10-31 10:47:18,307 [INFO] 📊 [BNB/USDT] شمعة مغلقة [2026-10-31 04:00:00+00:00] | Close: $700.16 | Fast EMA: 707.59 | Slow EMA: 726.55 | RSI: 36.4 | ATR: 13.12 | Daily Trend Up: False
+2026-10-31 10:47:18,708 [INFO] 👤 [Shadow QDS] BNB/USDT | Legacy: WAIT (State: FLAT) | QDS: WAIT | QDS WAIT: لا يوجد تقاطع EMA صاعد طازج · الاتجاه اليومي هابط · RSI (36.4) أقل من 40 (Regime: TRENDING_DOWN | Score: 45.0)
+2026-10-31 10:47:18,708 [INFO] [BNB/USDT] ✅ الدورة مكتملة. (Legacy: WAIT [FLAT])
+2026-10-31 10:47:18,865 [WARNING] ⚠️ فشل استدعاء Gemini API: HTTP Error 404: Not Found
+2026-10-31 10:47:19,367 [INFO] 💓 [BTC/USDT] نبضة حياة (uptime: 0.0h)
+2026-10-31 10:47:19,454 [WARNING] ⚠️ فشل استدعاء Gemini API: HTTP Error 404: Not Found
+2026-10-31 10:47:19,879 [INFO] 💓 [ETH/USDT] نبضة حياة (uptime: 0.0h)
+2026-10-31 10:47:20,026 [WARNING] ⚠️ فشل استدعاء Gemini API: HTTP Error 404: Not Found
+2026-10-31 10:47:20,455 [INFO] 💓 [SOL/USDT] نبضة حياة (uptime: 0.0h)
+2026-10-31 10:47:20,548 [WARNING] ⚠️ فشل استدعاء Gemini API: HTTP Error 404: Not Found
+2026-10-31 10:47:20,968 [INFO] 💓 [LINK/USDT] نبضة حياة (uptime: 0.0h)
+2026-10-31 10:47:21,147 [WARNING] ⚠️ فشل استدعاء Gemini API: HTTP Error 404: Not Found
+2026-10-31 10:47:21,595 [INFO] 💓 [BNB/USDT] نبضة حياة (uptime: 0.0h)
+2026-10-31 10:47:21,596 [INFO] ✅ انتهت جميع الدورات.
