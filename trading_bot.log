@@ -6492,3 +6492,27 @@ KeyError: 'slow_ema'
 2026-11-01 16:25:59,815 [WARNING] ⚠️ فشل استدعاء Gemini API: HTTP Error 404: Not Found
 2026-11-01 16:26:00,166 [INFO] 💓 [BNB/USDT] نبضة حياة (uptime: 0.0h)
 2026-11-01 16:26:00,167 [INFO] ✅ انتهت جميع الدورات.
+2026-11-01 20:44:13,020 [INFO] ============================================================
+2026-11-01 20:44:13,020 [INFO] 🤖 GitHub Actions — بدء الدورة لكل الأزواج
+2026-11-01 20:44:13,020 [INFO] ============================================================
+2026-11-01 20:44:13,020 [INFO] 🔍 فحص BTC/USDT...
+2026-11-01 20:44:15,620 [INFO] 📊 [BTC/USDT] شمعة مغلقة [2026-11-01 16:00:00+00:00] | Close: $77,799.29 | Fast EMA: 77833.49 | Slow EMA: 78626.97 | RSI: 41.6 | ATR: 706.23 | Daily Trend Up: False
+2026-11-01 20:44:16,225 [INFO] 👤 [Shadow QDS] BTC/USDT | Legacy: WAIT (State: FLAT) | QDS: WAIT | QDS WAIT: لا يوجد تقاطع EMA صاعد طازج · الاتجاه اليومي هابط (Regime: TRENDING_DOWN | Score: 42.5)
+2026-11-01 20:44:16,225 [INFO] [BTC/USDT] ✅ الدورة مكتملة. (Legacy: WAIT [FLAT])
+2026-11-01 20:44:16,225 [INFO] 🔍 فحص ETH/USDT...
+2026-11-01 20:44:16,568 [INFO] 📊 [ETH/USDT] شمعة مغلقة [2026-11-01 16:00:00+00:00] | Close: $2,259.30 | Fast EMA: 2262.05 | Slow EMA: 2282.20 | RSI: 42.6 | ATR: 26.04 | Daily Trend Up: False
+2026-11-01 20:44:17,145 [INFO] 👤 [Shadow QDS] ETH/USDT | Legacy: WAIT (State: FLAT) | QDS: WAIT | QDS WAIT: لا يوجد تقاطع EMA صاعد طازج · الاتجاه اليومي هابط (Regime: TRENDING_DOWN | Score: 42.5)
+2026-11-01 20:44:17,146 [INFO] [ETH/USDT] ✅ الدورة مكتملة. (Legacy: WAIT [FLAT])
+2026-11-01 20:44:17,146 [INFO] 🔍 فحص SOL/USDT...
+2026-11-01 20:44:17,488 [INFO] 📊 [SOL/USDT] شمعة مغلقة [2026-11-01 16:00:00+00:00] | Close: $93.97 | Fast EMA: 95.18 | Slow EMA: 97.37 | RSI: 32.7 | ATR: 1.42 | Daily Trend Up: False
+2026-11-01 20:44:18,063 [INFO] 👤 [Shadow QDS] SOL/USDT | Legacy: WAIT (State: FLAT) | QDS: WAIT | QDS WAIT: لا يوجد تقاطع EMA صاعد طازج · الاتجاه اليومي هابط · RSI (32.7) أقل من 40 (Regime: TRENDING_DOWN | Score: 40.0)
+2026-11-01 20:44:18,063 [INFO] [SOL/USDT] ✅ الدورة مكتملة. (Legacy: WAIT [FLAT])
+2026-11-01 20:44:18,063 [INFO] 🔍 فحص LINK/USDT...
+2026-11-01 20:44:18,405 [INFO] 📊 [LINK/USDT] شمعة مغلقة [2026-11-01 16:00:00+00:00] | Close: $11.38 | Fast EMA: 11.58 | Slow EMA: 11.53 | RSI: 46.7 | ATR: 0.29 | Daily Trend Up: False
+2026-11-01 20:44:18,979 [INFO] 👤 [Shadow QDS] LINK/USDT | Legacy: WAIT (State: FLAT) | QDS: WAIT | QDS WAIT: لا يوجد تقاطع EMA صاعد طازج · الاتجاه اليومي هابط (Regime: SIDEWAYS | Score: 55.0)
+2026-11-01 20:44:18,980 [INFO] [LINK/USDT] ✅ الدورة مكتملة. (Legacy: WAIT [FLAT])
+2026-11-01 20:44:18,980 [INFO] 🔍 فحص BNB/USDT...
+2026-11-01 20:44:19,323 [INFO] 📊 [BNB/USDT] شمعة مغلقة [2026-11-01 16:00:00+00:00] | Close: $708.82 | Fast EMA: 709.05 | Slow EMA: 718.19 | RSI: 43.9 | ATR: 9.82 | Daily Trend Up: False
+2026-11-01 20:44:19,897 [INFO] 👤 [Shadow QDS] BNB/USDT | Legacy: WAIT (State: FLAT) | QDS: WAIT | QDS WAIT: لا يوجد تقاطع EMA صاعد طازج · الاتجاه اليومي هابط (Regime: TRENDING_DOWN | Score: 42.5)
+2026-11-01 20:44:19,897 [INFO] [BNB/USDT] ✅ الدورة مكتملة. (Legacy: WAIT [FLAT])
+2026-11-01 20:44:19,897 [INFO] ✅ انتهت جميع الدورات.
