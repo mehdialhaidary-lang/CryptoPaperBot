@@ -8,7 +8,9 @@
         "ETH/USDT": 1793678400000,
         "SOL/USDT": 1793678400000,
         "LINK/USDT": 1793678400000,
-        "BNB/USDT": 1793678400000
+        "BNB/USDT": 1793678400000,
+        "SUI/USDT": 1793692800000,
+        "RENDER/USDT": 1793692800000
     },
     "suspended_records": {},
     "anomalies": []
