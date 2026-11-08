@@ -7623,3 +7623,42 @@ KeyError: 'slow_ema'
 2026-11-08 20:23:50,896 [INFO] 👤 [Shadow QDS] RENDER/USDT | Legacy: WAIT (State: FLAT) | QDS: WAIT | QDS WAIT: لا يوجد تقاطع EMA صاعد طازج · الاتجاه اليومي هابط (Regime: SIDEWAYS | Score: 55.0)
 2026-11-08 20:23:50,896 [INFO] [RENDER/USDT] ✅ الدورة مكتملة. (Legacy: WAIT [FLAT])
 2026-11-08 20:23:50,897 [INFO] ✅ انتهت جميع الدورات.
+2026-11-08 23:55:30,927 [INFO] ============================================================
+2026-11-08 23:55:30,928 [INFO] 🤖 GitHub Actions — بدء الدورة لكل الأزواج
+2026-11-08 23:55:30,928 [INFO] ============================================================
+2026-11-08 23:55:30,928 [INFO] 🔍 فحص BTC/USDT...
+2026-11-08 23:55:33,477 [INFO] 👤 [Shadow QDS] BTC/USDT | Legacy: WAIT (State: FLAT) | QDS: WAIT | QDS WAIT: لا يوجد تقاطع EMA صاعد طازج · الاتجاه اليومي هابط (Regime: TRENDING_DOWN | Score: 27.5)
+2026-11-08 23:55:33,478 [INFO] [BTC/USDT] ✅ الدورة مكتملة. (Legacy: WAIT [FLAT])
+2026-11-08 23:55:33,478 [INFO] 🔍 فحص ETH/USDT...
+2026-11-08 23:55:34,334 [INFO] 👤 [Shadow QDS] ETH/USDT | Legacy: WAIT (State: FLAT) | QDS: WAIT | QDS WAIT: لا يوجد تقاطع EMA صاعد طازج · الاتجاه اليومي هابط (Regime: TRENDING_DOWN | Score: 27.5)
+2026-11-08 23:55:34,335 [INFO] [ETH/USDT] ✅ الدورة مكتملة. (Legacy: WAIT [FLAT])
+2026-11-08 23:55:34,335 [INFO] 🔍 فحص SOL/USDT...
+2026-11-08 23:55:35,182 [INFO] 👤 [Shadow QDS] SOL/USDT | Legacy: WAIT (State: FLAT) | QDS: WAIT | QDS WAIT: لا يوجد تقاطع EMA صاعد طازج · الاتجاه اليومي هابط · RSI (39.8) أقل من 40 (Regime: TRENDING_DOWN | Score: 25.0)
+2026-11-08 23:55:35,182 [INFO] [SOL/USDT] ✅ الدورة مكتملة. (Legacy: WAIT [FLAT])
+2026-11-08 23:55:35,182 [INFO] 🔍 فحص LINK/USDT...
+2026-11-08 23:55:36,030 [INFO] 👤 [Shadow QDS] LINK/USDT | Legacy: WAIT (State: FLAT) | QDS: WAIT | QDS WAIT: لا يوجد تقاطع EMA صاعد طازج · الاتجاه اليومي هابط · RSI (39.2) أقل من 40 (Regime: SIDEWAYS | Score: 30.0)
+2026-11-08 23:55:36,030 [INFO] [LINK/USDT] ✅ الدورة مكتملة. (Legacy: WAIT [FLAT])
+2026-11-08 23:55:36,030 [INFO] 🔍 فحص BNB/USDT...
+2026-11-08 23:55:36,873 [INFO] 👤 [Shadow QDS] BNB/USDT | Legacy: WAIT (State: FLAT) | QDS: WAIT | QDS WAIT: لا يوجد تقاطع EMA صاعد طازج · الاتجاه اليومي هابط (Regime: SIDEWAYS | Score: 35.0)
+2026-11-08 23:55:36,873 [INFO] [BNB/USDT] ✅ الدورة مكتملة. (Legacy: WAIT [FLAT])
+2026-11-08 23:55:36,873 [INFO] 🔍 فحص SUI/USDT...
+2026-11-08 23:55:37,647 [INFO] 👤 [Shadow QDS] SUI/USDT | Legacy: WAIT (State: FLAT) | QDS: WAIT | QDS WAIT: لا يوجد تقاطع EMA صاعد طازج · الاتجاه اليومي هابط · RSI (38.6) أقل من 40 (Regime: TRENDING_DOWN | Score: 40.0)
+2026-11-08 23:55:37,647 [INFO] [SUI/USDT] ✅ الدورة مكتملة. (Legacy: WAIT [FLAT])
+2026-11-08 23:55:37,647 [INFO] 🔍 فحص RENDER/USDT...
+2026-11-08 23:55:38,420 [INFO] 👤 [Shadow QDS] RENDER/USDT | Legacy: WAIT (State: FLAT) | QDS: WAIT | QDS WAIT: لا يوجد تقاطع EMA صاعد طازج · الاتجاه اليومي هابط (Regime: SIDEWAYS | Score: 55.0)
+2026-11-08 23:55:38,420 [INFO] [RENDER/USDT] ✅ الدورة مكتملة. (Legacy: WAIT [FLAT])
+2026-11-08 23:55:38,600 [WARNING] ⚠️ فشل استدعاء Gemini API: HTTP Error 404: Not Found
+2026-11-08 23:55:39,056 [INFO] 💓 [BTC/USDT] نبضة حياة (uptime: 0.0h)
+2026-11-08 23:55:39,192 [WARNING] ⚠️ فشل استدعاء Gemini API: HTTP Error 404: Not Found
+2026-11-08 23:55:39,583 [INFO] 💓 [ETH/USDT] نبضة حياة (uptime: 0.0h)
+2026-11-08 23:55:39,720 [WARNING] ⚠️ فشل استدعاء Gemini API: HTTP Error 404: Not Found
+2026-11-08 23:55:40,101 [INFO] 💓 [SOL/USDT] نبضة حياة (uptime: 0.0h)
+2026-11-08 23:55:40,240 [WARNING] ⚠️ فشل استدعاء Gemini API: HTTP Error 404: Not Found
+2026-11-08 23:55:40,619 [INFO] 💓 [LINK/USDT] نبضة حياة (uptime: 0.0h)
+2026-11-08 23:55:40,758 [WARNING] ⚠️ فشل استدعاء Gemini API: HTTP Error 404: Not Found
+2026-11-08 23:55:41,164 [INFO] 💓 [BNB/USDT] نبضة حياة (uptime: 0.0h)
+2026-11-08 23:55:41,304 [WARNING] ⚠️ فشل استدعاء Gemini API: HTTP Error 404: Not Found
+2026-11-08 23:55:41,691 [INFO] 💓 [SUI/USDT] نبضة حياة (uptime: 0.0h)
+2026-11-08 23:55:41,822 [WARNING] ⚠️ فشل استدعاء Gemini API: HTTP Error 404: Not Found
+2026-11-08 23:55:42,210 [INFO] 💓 [RENDER/USDT] نبضة حياة (uptime: 0.0h)
+2026-11-08 23:55:42,210 [INFO] ✅ انتهت جميع الدورات.
