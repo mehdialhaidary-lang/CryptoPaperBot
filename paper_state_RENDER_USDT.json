@@ -2,7 +2,7 @@
     "balance": 1000.0,
     "initial_balance": 1000.0,
     "position": null,
-    "last_processed_candle_time": 1795032000000,
+    "last_processed_candle_time": 1795060800000,
     "trades": [],
-    "last_heartbeat_time": 1795032750.323968
+    "last_heartbeat_time": 1795082429.645961
 }
